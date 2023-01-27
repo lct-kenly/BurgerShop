@@ -708,7 +708,7 @@ a:focus {
 }
 
 .account_section .form_container .form-control{
-  width: 30%;
+  width: 30%; 
   border: none;
   height: 50px;
   margin: 25px;
