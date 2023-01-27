@@ -758,13 +758,26 @@ a:focus {
   border: none;
 }
 
-.account_section .btn { 
+.account_section .btn_box { 
   display: flex;
   justify-content: center;
 }
 
 .account-title {
   font-size: 4rem;
+}
+
+.account-register {
+  display: flex;
+  justify-content: center;
+}
+
+.account-register p {
+  font-size: 0.8rem;
+}
+
+.register-link:hover {
+  
 }
 
 .book_section .form_container button:hover , .account_section .form_container button:hover {
