@@ -1,0 +1,39 @@
+@media(min-width: 1024px) {
+    .btn-nav-mobile,
+    .btn-close-nav-mobile {
+        display: none;
+    }
+}
+
+@media(min-width: 768px) and (max-width: 1023px) {
+    .layout-page {
+        margin-left: 0;
+    }
+}
+
+@media(max-width: 576px) {
+
+    .layout-page {
+        margin-left: 0;
+    }
+
+    .page-header {
+        padding: 12px
+    }
+
+    .btn-nav-mobile {
+        padding-left: 0;
+    }
+
+    form .form-group-flex {
+        flex-direction: column;
+    }
+
+    .page-content {
+        overflow: auto;
+    }
+
+    .page-content table {
+        width: 200%;
+    }
+}
