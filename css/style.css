@@ -48,6 +48,19 @@ h2 {
           align-items: flex-start;
 }
 
+.heading_container-account {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
 .heading_container h2 {
   position: relative;
   margin-bottom: 0;
@@ -117,6 +130,10 @@ a:focus {
      object-fit: cover;
 }
 
+.bg-account {
+  background-color: #000;
+}
+
 .sub_page .hero_area {
   min-height: auto;
 }
@@ -142,7 +159,12 @@ a:focus {
   padding: 15px 0;
 }
 
-.header_section .container-fluid {
+.header_section__account {
+  background-color: #222831;
+  padding: 15px 0;
+}
+
+.header_section .container-fluid,.header_section__account .container-fluid {
   padding-right: 25px;
   padding-left: 25px;
 }
@@ -662,11 +684,11 @@ a:focus {
   background-color: #e69c00;
 }
 
-.book_section {
+.book_section, .account_section {
   position: relative;
 }
 
-.book_section .heading_container {
+.book_section .heading_container , .account_section .heading_container{
   margin-bottom: 25px;
 }
 
@@ -685,27 +707,44 @@ a:focus {
           box-shadow: none;
 }
 
-.book_section .form_container .form-control::-webkit-input-placeholder {
+.account_section .form_container .form-control{
+  width: 30%;
+  border: none;
+  height: 50px;
+  margin: 25px;
+  padding-left: 25px;
+  border: 1px solid #999;
+  outline: none;
+  color: #000000;
+  border-radius: 5px;
+  outline: none;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.book_section .form_container .form-control::-webkit-input-placeholder, .account_section .form_container .form-control::-webkit-input-placeholder {
   color: #222222;
 }
 
-.book_section .form_container .form-control:-ms-input-placeholder {
+.book_section .form_container .form-control:-ms-input-placeholder, .account_section .form_container .form-control:-ms-input-placeholder {
   color: #222222;
 }
 
-.book_section .form_container .form-control::-ms-input-placeholder {
+.book_section .form_container .form-control::-ms-input-placeholder , .account_section .form_container .form-control::-ms-input-placeholder {
   color: #222222;
 }
 
-.book_section .form_container .form-control::placeholder {
+.book_section .form_container .form-control::placeholder , .account_section .form_container .form-control::placeholder {
   color: #222222;
 }
 
-.book_section .form_container .nice-select .current {
+.book_section .form_container .nice-select .current, .account_section .form_container .nice-select .current {
   font-size: 16px;
 }
 
-.book_section .form_container button {
+.book_section .form_container button, .account_section .form_container button {
   margin-top: 15px;
   border: none;
   text-transform: uppercase;
@@ -719,7 +758,16 @@ a:focus {
   border: none;
 }
 
-.book_section .form_container button:hover {
+.account_section .btn { 
+  display: flex;
+  justify-content: center;
+}
+
+.account-title {
+  font-size: 4rem;
+}
+
+.book_section .form_container button:hover , .account_section .form_container button:hover {
   background-color: #e69c00;
 }
 
