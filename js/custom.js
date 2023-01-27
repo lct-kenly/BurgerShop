@@ -68,3 +68,19 @@ $(".client_owl-carousel").owlCarousel({
         }
     }
 });
+
+//show password
+$('.show-password').click(function(e) {
+    const parent = $(this).parent();
+    const inputPassword = parent.find('input');
+
+    if(inputPassword.attr('type') === 'password') {
+        $(inputPassword).attr('type', 'text');
+        $(this).find('i').removeClass('fa-eye-slash');
+        $(this).find('i').addClass('fa-eye');
+    } else {
+        $(inputPassword).attr('type', 'password');
+        $(this).find('i').removeClass('fa-eye');
+        $(this).find('i').addClass('fa-eye-slash');
+    }
+})

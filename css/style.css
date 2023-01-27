@@ -1053,3 +1053,35 @@ a:focus {
   color: inherit;
 }
 /*# sourceMappingURL=style.css.map */
+
+/* Login/Register CSS */
+
+.form_container input {
+  margin: 0;
+  width: 100% !important;
+}
+
+.btn_box {
+  text-align: center;
+}
+
+.btn_box button {
+  width: 100%;
+}
+
+.btn_box a {
+  width: 100%;
+  display: block;
+  margin-top: 16px;
+  padding: 10px 55px;
+  background-color: #e0e00d;
+  color: #fff;
+  border-radius: 999px
+}
+
+.show-password {
+  position: absolute;
+  top: 50%;
+  right:6px;
+  transform: translateY(-50%);
+}
