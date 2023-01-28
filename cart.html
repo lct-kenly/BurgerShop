@@ -1,45 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <head>
-        <!-- Basic -->
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <!-- Mobile Metas -->
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <!-- Site Metas -->
-        <meta name="keywords" content="" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <link rel="shortcut icon" href="images/favicon.png" type="">
-      
-        <title> Feane </title>
-      
-        <!-- bootstrap core css -->
-        <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
-      
-        <!--owl slider stylesheet -->
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
-        <!-- nice select  -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/css/nice-select.min.css" integrity="sha512-CruCP+TD3yXzlvvijET8wV5WxxEh5H8P4cmz0RFbKK6FlZ2sYl3AEsKlLPHbniXKSrDdFewhbmBK5skbdsASbQ==" crossorigin="anonymous" />
-        <!-- font awesome style -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" rel="stylesheet" />
-      
-        <!-- Custom styles for this template -->
-        <link href="css/style.css" rel="stylesheet" />
-        <!-- responsive style -->
-        <link href="css/responsive.css" rel="stylesheet" />
-      
-      </head>
-      
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <link rel="shortcut icon" href="images/favicon.png" type="">
+
+  <title> Feane </title>
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+
+  <!--owl slider stylesheet -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+  <!-- nice select  -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/css/nice-select.min.css" integrity="sha512-CruCP+TD3yXzlvvijET8wV5WxxEh5H8P4cmz0RFbKK6FlZ2sYl3AEsKlLPHbniXKSrDdFewhbmBK5skbdsASbQ==" crossorigin="anonymous" />
+  <!-- font awesome style -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" rel="stylesheet" />
+
+  <!-- Custom styles for this template -->
+  <link href="css/style.css" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="css/responsive.css" rel="stylesheet" />
+
 </head>
-<body>
-  <div class="">
-    <div class="bg-account">
-      <!-- <img src="images/hero-bg.jpg" alt=""> -->
+
+<body class="sub_page">
+
+  <div class="hero_area">
+    <div class="bg-box">
+      <img src="images/hero-bg.jpg" alt="">
     </div>
     <!-- header section strats -->
-    <header class="header_section__account">
+    <header class="header_section">
       <div class="container">
         <nav class="navbar navbar-expand-lg custom_nav-container ">
           <a class="navbar-brand" href="index.html">
@@ -63,7 +63,7 @@
               <li class="nav-item">
                 <a class="nav-link" href="about.html">About</a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item active">
                 <a class="nav-link" href="book.html">Book Table <span class="sr-only">(current)</span> </a>
               </li>
             </ul>
@@ -101,61 +101,96 @@
     <!-- end header section -->
   </div>
 
-<!-- Start Account Section -->
-  <section class="account_section layout_padding">
+  <!-- book section -->
+  <section class="book_section layout_padding">
     <div class="container">
-      <div class="heading_container-account">
-        <h2 class="account-title">
-        Register
+      <div class="heading_container mb-5">
+        <h2 class="text-center w-100">
+          SHOPPING CART
         </h2>
       </div>
       <div class="row">
-        <div class="col-md-12">
-          <div class="form_container">
-            <form action="">
-                <div>
-                  <input type="text" class="form-control" placeholder="Username" />
-                </div>
-                <div>
-                    <input type="password" class="form-control" placeholder="Password" />
-                    <span class="show-password"><i class="fa-regular fa-eye"></i></span>
-                </div>
-                <div>
-                    <input type="password" class="form-control" placeholder="Repeat Password" />
-                    <span class="show-password"><i class="fa-regular fa-eye"></i></span>
-                </div>
-                <div>
-                  <input type="text" class="form-control" placeholder="Phone Number" />
-                </div>
-                <div>
-                  <input type="email" class="form-control" placeholder="Your Email" />
-                </div>
-                <div>
-                  <input type="text" class="form-control"  placeholder="Your Address">
-                </div>
-                <div class="account-register">
-                    <p>Already have account? <a href="account.html" class="register-link"> Sign in </a></p>
-                </div>
-                <div class="btn_box">
-                  <button>
-                    Register
-                  </button>
-                </div>
-              </form>
-          </div>
+        <div class="col-md-8">
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                  <tr>
+                    <th class="text-center" scope="col">Product image</th>
+                    <th class="text-center" scope="col">Name</th>
+                    <th class="text-center" scope="col">Price</th>
+                    <th class="text-center" scope="col">Quantity</th>
+                    <th class="text-center" scope="col">Total</th>
+                    <th class="text-center" scope="col">Remove</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-center"><img src="./images/f1.png" alt="" style="width: 60px; height: 60px"></td>
+                    <td class="text-center vertical-center">Delicious Pizza</td>
+                    <td class="text-center vertical-center">$20</td>
+                    <td class="text-center vertical-center">
+                        <input class="p-2" type="number" value="1" style="max-width: 50%">
+                    </td>
+                    <td class="text-center vertical-center">$0</td>
+                    <td class="text-center vertical-center"><a href=""><i class="fa-solid fa-x"></i></a></td>
+                  </tr>
+
+                  <tr>
+                    <td class="text-center"><img src="./images/f1.png" alt="" style="width: 60px; height: 60px"></td>
+                    <td class="text-center vertical-center">Delicious Pizza</td>
+                    <td class="text-center vertical-center">$20</td>
+                    <td class="text-center vertical-center">
+                        <input class="p-2" type="number" value="1" style="max-width: 50%">
+                    </td>
+                    <td class="text-center vertical-center">$0</td>
+                    <td class="text-center vertical-center"><a href=""><i class="fa-solid fa-x"></i></a></td>
+                  </tr>
+
+                  <tr>
+                    <td class="text-center"><img src="./images/f1.png" alt="" style="width: 60px; height: 60px"></td>
+                    <td class="text-center vertical-center">Delicious Pizza</td>
+                    <td class="text-center vertical-center">$20</td>
+                    <td class="text-center vertical-center">
+                        <input class="p-2" type="number" value="1" style="max-width: 50%">
+                    </td>
+                    <td class="text-center vertical-center">$0</td>
+                    <td class="text-center vertical-center"><a href=""><i class="fa-solid fa-x"></i></a></td>
+                  </tr>
+                </tbody>
+            </table>
+
+            <a href="" class="btn btn-primary py-2 px-5">Update Cart</a>
+        </div>
+        <div class="col-md-4">
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                  <tr>
+                    <th class="text-center" scope="col">Total</th>
+                    <th class="text-center" scope="col">Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-center">Subtotal:</td>
+                    <td class="text-center">$500</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center">Shipping:</td>
+                    <td class="text-center">$45</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center">Total:</td>
+                    <td class="text-center">$545</td>
+                  </tr>
+                </tbody>
+              </table>
+              <a href="" class="btn btn-primary w-100 py-2">Proceed To Checkout</a>
         </div>
       </div>
     </div>
   </section>
+  <!-- end book section -->
 
-
-
-
-
-
-
-<!-- End Account Section -->
-
+  <!-- footer section -->
   <footer class="footer_section">
     <div class="container">
       <div class="row">
@@ -259,4 +294,5 @@
   <!-- End Google Map -->
 
 </body>
+
 </html>
