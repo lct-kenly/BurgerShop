@@ -419,25 +419,24 @@ form .btn-submit-form:hover {
     opacity: .8;
 }
 
-/* Modal zoom image */
-.grid-img.fixed {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    padding-top: 200px;
-    background-color: rgba(0, 0, 0, .5);
-}
-
 .grid-img img {
     width: 25%;
     height: auto; 
+    margin: 8px 8px 16px 0;
     border-radius: 6px; 
     cursor: pointer;
     transition: .3s ease-in-out;
 }
 
-.grid-img.fixed img {
-    transform: scale(5);
+.show-password {
+    position: absolute;
+    right: 10px;
+    top: 55%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+
+.show-password i {
+    color: var(--text-color);
 }

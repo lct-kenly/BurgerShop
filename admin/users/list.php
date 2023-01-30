@@ -1,3 +1,21 @@
+<?php 
+    $conn = mysqli_connect('localhost', 'root', '', 'burger-shop') or die('Couldn\'t connect to Database');
+
+    session_start();
+
+    if(!isset($_SESSION['admin_logged'])) {
+        header('location: ../../account.php');
+    }
+
+    $users = array();
+
+    $sql = "SELECT * FROM khach_hang";
+    $query = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_assoc($query)) {
+        $users[] = $row;
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +28,9 @@
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
 
 
     <!-- Base CSS -->
@@ -32,7 +53,7 @@
 
             <!-- Logo brand -->
             <div class="app-brand">
-                <a href="../index.html" class="">
+                <a href="../index.php" class="">
                     <h5>APP BRAND</h5>
                 </a>
             </div>
@@ -41,7 +62,7 @@
             
             <ul class="menu-inner">
                 <li class="menu-item">
-                    <a href="../index.html" class="menu-link">
+                    <a href="../index.php" class="menu-link">
                         <i class="fa-solid fa-house menu-icon"></i>                        
                         <span>Trang chủ</span>              
                     </a>
@@ -53,21 +74,21 @@
                     <span>Users</span>
                 </li>
 
-                <li class="menu-item">
-                    <a href="" class="menu-link menu-toggle">
+                <li class="menu-item active">
+                    <a href="" class="menu-link menu-toggle active">
                         <i class="fa-solid fa-user menu-icon"></i>                       
                         <span>Khách hàng</span>              
                     </a>
 
-                    <ul class="menu-sub">
+                    <ul class="menu-sub open">
                         <li class="menu-item">
-                            <a href="../users/list.html" class="menu-link">
+                            <a href="./list.php" class="menu-link active">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="../users/add.html" class="menu-link">
+                            <a href="./add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -81,21 +102,21 @@
                     <span>Products</span>
                 </li>
 
-                <li class="menu-item active">
-                    <a href="" class="menu-link menu-toggle active">
+                <li class="menu-item">
+                    <a href="" class="menu-link menu-toggle">
                         <i class="fa-solid fa-burger menu-icon"></i>                      
                         <span>Sản phẩm</span>              
                     </a>
 
-                    <ul class="menu-sub open">
+                    <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="./list.html" class="menu-link">
+                            <a href="../products/list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="./add.html" class="menu-link active">
+                            <a href="../products/add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -116,13 +137,13 @@
 
                     <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="../orders/list.html" class="menu-link">
+                            <a href="../orders/list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="../orders/add.html" class="menu-link">
+                            <a href="../orders/add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -166,7 +187,7 @@
                                         <li class="divider"></li>
 
                                         <li class="dropdown-item">
-                                            <a href="../my-profile.html" class="dropdown-link">
+                                            <a href="../my-profile.php" class="dropdown-link">
                                                 <i class="fa-regular fa-address-card"></i>
                                                 <span>Thông tin tài khoản</span>
                                             </a>
@@ -190,7 +211,7 @@
                                         <li class="divider"></li>
 
                                         <li class="dropdown-item">
-                                            <a href="" class="dropdown-link">
+                                            <a href="../../logout.php" class="dropdown-link">
                                                 <i class="fa-solid fa-power-off"></i>
                                                 <span>Đăng xuất</span>
                                             </a>
@@ -210,8 +231,8 @@
                     <div class="col-md-12">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb ms-4">
-                                <li class="breadcrumb-item"><a href="../index.html" class="text-decoration-none fs-5">Trang chủ</a></li>
-                                <li class="breadcrumb-item"><a href="./add.html" class="text-decoration-none fs-5">Khách hàng</a></li>
+                                <li class="breadcrumb-item"><a href="../index.php" class="text-decoration-none fs-5">Trang chủ</a></li>
+                                <li class="breadcrumb-item"><a href="./add.php" class="text-decoration-none fs-5">Khách hàng</a></li>
                                 <li class="breadcrumb-item active fs-5" aria-current="page">Thêm tài khoản</li>
                             </ol>
                         </nav>
@@ -219,51 +240,57 @@
                 </div> -->
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="page-content bg-white rounded-3">
-                            <form class="p-4">
-                                <div class="form-group-flex">
-                                    <div class="form-group">
-                                        <label for="name" class="form-label">Tên sản phẩm</label>
-                                        <input type="text" class="form-control" id="name" placeholder="VD: Burger">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="price" class="form-label">Đơn giá</label>
-                                        <input type="number" class="form-control" id="price" placeholder="VD: 20.000">
-                                    </div>
-                                </div>
-
-                                <div class="form-group-flex">
-                                    <div class="form-group">
-                                        <label for="quantity" class="form-label">Số lượng</label>
-                                        <input type="number" class="form-control" id="quantity" name="fullname" placeholder="VD: 10">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="Date" class="form-label">Ngày</label>
-                                        <input type="Date" class="form-control" id="Date" name="Date" placeholder="16/01/2023">
-                                    </div>
-                                </div>
-
-                                <div class="form-group-flex align-items-start">
-                                    <div class="form-group">
-                                        <label for="id_loai" class="form-label">ID loại hàng</label>
-                                        <select class="form-select" name="id_loai" aria-label="Default select example">
-                                            <option value="0">0 - Burger</option>
-                                            <option value="1">1 - Pasta</option>
-                                          </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="thumbnail" class="form-label">Hình ảnh</label>
-                                        <input type="file" class="form-control" id="thumbnail" name="thumbnail" accept=".jpg, .png, .jpeg">
-                                        <p class="form-text">Allowed JPG, JPEG or PNG. Max size of 800K</p>
-                                        <div class="grid-img">
-                                            <img src="" alt="upload-hinh-anh-san-pham">
-                                        </div>
-                                    </div>
-                                </div>
-                                <button type="submit" name="submit" value="submit" class="btn-submit-form">Xác nhận</button>
-                            </form>
+                        <div class="page-content bg-white rounded-3 p-4">
+                            <table class="table table-bordered display mt-3" id="table-list-users">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Họ tên</th>
+                                    <th scope="col">Tên tài khoản</th>
+                                    <th scope="col">Hành động</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($users as $item) { ?>
+                                        <tr>
+                                            <td><?=$item['id']?></td>
+                                            <td><?=$item['ho_ten']?></td>
+                                            <td><?=$item['ten_tai_khoan']?></td>
+                                            <td>
+                                                <?php if($item['level'] == 1 && $item['ten_tai_khoan'] == 'admin') { ?>
+                                                    <a href="./edit.php?id=<?=$item['id']?>" class="btn btn-sm btn-outline-info"><i class="fa-regular fa-pen-to-square"></i></a>
+                                                <?php } else { ?>
+                                                    <a href="./edit.php?id=<?=$item['id']?>" class="btn btn-sm btn-outline-info"><i class="fa-regular fa-pen-to-square"></i></a>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="<?=$item['id']?>">
+                                                        <i class="fa-regular fa-trash-can"></i>
+                                                    </button>
+                                                <?php } ?>
+                                            </td> 
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                              </table>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Xóa tài khoản</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn chắc chắn muốn xóa vĩnh viễn tài khoản này?
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-danger btn-delete-user">Xóa</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
         </div>
@@ -275,15 +302,30 @@
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 
+    <!-- DataTables JS -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+
     <script src="../assets/js/main.js"></script>
 
     <script>
-        const inputFile = document.querySelector('input[name="thumbnail"]');
-        const gridImg = document.querySelector('.grid-img');
+        $(document).ready( function () {
+            $('#table-list-users').DataTable();
+        } );
 
-        uploadFile(inputFile, gridImg);
 
+        document.addEventListener("DOMContentLoaded", function() {
+            let id;
 
+            const btnDelete = document.querySelector('.btn-delete-user');
+            const exampleModal = document.getElementById('exampleModal')
+            exampleModal.addEventListener('show.bs.modal', event => {
+                const button = event.relatedTarget;
+                
+                id = button.getAttribute('data-id');
+
+                btnDelete.setAttribute('href', `./delete.php?id=${id}`);
+            });
+        })
     </script>
 </body>
 </html>

@@ -1,3 +1,32 @@
+<?php 
+    $conn = mysqli_connect('localhost', 'root', '', 'burger-shop') or die('Couldn\'t connect to Database');
+
+    $error = array();
+    session_start();
+
+    if(isset($_SESSION['user_logged'])) {
+        $user = $_SESSION['user_logged'];
+
+        include('./libs/helper.php');
+
+        $countID_cart = get_count_cart($conn, $user['id']) ?? 0;
+
+    }
+
+    $sql = "SELECT san_pham.id, san_pham.ten_san_pham, san_pham.mo_ta, san_pham.don_gia_ban, san_pham.hinh_anh, loai_hang.ten_loai
+            FROM san_pham, loai_hang
+            WHERE san_pham.id_loai_hang=loai_hang.id";
+    $query = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_assoc($query)) {
+        $sanpham[] = $row;
+    }
+
+    $sql = "SELECT * FROM loai_hang";
+    $query = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_assoc($query)) {
+        $loaihang[] = $row;
+    }
+?>
 <!DOCTYPE html>
 <html>
 
@@ -42,7 +71,7 @@
     <header class="header_section">
       <div class="container">
         <nav class="navbar navbar-expand-lg custom_nav-container ">
-          <a class="navbar-brand" href="index.html">
+          <a class="navbar-brand" href="index.php">
             <span>
               Feane
             </span>
@@ -55,22 +84,25 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav  mx-auto ">
               <li class="nav-item active">
-                <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="menu.html">Menu</a>
+                <a class="nav-link" href="menu.php">Menu</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="about.html">About</a>
+                <a class="nav-link" href="about.php">About</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="book.html">Book Table</a>
+                <a class="nav-link" href="cart.php">Cart</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="book.php">Book Table</a>
               </li>
             </ul>
             <div class="user_option">
               <a class="cart_link" href="#">
                 <i class="fa-solid fa-cart-shopping"></i>
-                <span>3</span>
+                <span><?php echo $countID_cart ?? 0;?></span>
               </a>
 
               <div class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
@@ -88,11 +120,38 @@
                   </div>
                 </form>
               </div>
+              <?php if(isset($user)) { ?>
+                <div class="grid-logged">
+                  <button class="user_logged btn-show-nav-sub" type="button">
+                      <img src="<?php echo !empty($user['avatar']) ? './storage/uploads/'.$user['avatar'] : './images/avatar-.jpg'?>" alt="">
+                      <span><?=$user['ten_tai_khoan']?></span>
+                    </button>
+                    <ul class="nav-sub-logged">
+                        <li>
+                          <img src="<?php echo !empty($user['avatar']) ? './storage/uploads/'.$user['avatar'] : './images/avatar-.jpg'?>" alt="">
+                          <span><?=$user['ten_tai_khoan']?></span>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                          <a href="./profile.php"><i class="fa-regular fa-user"></i> Thông tin tài khoản</a>
+                        </li>
+                        <li>
+                          <a href="./order.php"><i class="fa-solid fa-list-check"></i> Đơn hàng của bạn</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                          <a href="./logout.php"><i class="fa-solid fa-power-off"></i> Đăng xuất</a>
+                        </li>
+                    </ul>
+                </div>
+              <?php } else { ?>
+                <a href="account.php" class="user_link">
+                  <i class="fa fa-user mr-2" aria-hidden="true"></i>
+                  Đăng nhập
+                </a>
+              <?php } ?>
               
-              <a href="account.html" class="user_link">
-                <i class="fa fa-user mr-2" aria-hidden="true"></i>
-                Đăng nhập
-              </a>
+
             </div>
           </div>
         </nav>
@@ -241,239 +300,32 @@
 
       <ul class="filters_menu">
         <li class="active" data-filter="*">All</li>
-        <li data-filter=".burger">Burger</li>
-        <li data-filter=".pizza">Pizza</li>
-        <li data-filter=".pasta">Pasta</li>
-        <li data-filter=".fries">Fries</li>
+        <?php foreach ($loaihang as $item) { ?>
+          <li data-filter=".<?=$item['ten_loai']?>"><?=$item['ten_loai']?></li>
+        <?php } ?>
       </ul>
 
       <div class="filters-content">
         <div class="row grid">
-          <div class="col-sm-6 col-lg-4 all pizza">
-            <div class="box">
-              <div>
-                <div class="img-box">
-                  <img src="images/f1.png" alt="">
-                </div>
-                <div class="detail-box">
-                  <h5>
-                    Delicious Pizza
-                  </h5>
-                  <p>
-                    Veniam debitis quaerat officiis quasi cupiditate quo, quisquam velit, magnam voluptatem repellendus sed eaque
-                  </p>
-                  <div class="options">
-                    <h6>
-                      $20
-                    </h6>
-                    <a href="">
-                      <i class="fa-solid fa-cart-shopping"></i>
-                    </a>
+          <?php foreach ($sanpham as $item) { ?>
+            <div class="col-sm-6 col-lg-4 all <?=$item['ten_loai']?>">
+              <div class="box">
+                  <div class="img-box">
+                    <img src="./storage/uploads/<?=$item['hinh_anh']?>" alt="">
                   </div>
-                </div>
+                  <div class="detail-box">
+                    <h5><?=$item['ten_san_pham']?></h5>
+                    <p><?=$item['mo_ta']?></p>
+                    <div class="options">
+                      <h6>$<?=$item['don_gia_ban']?></h6>
+                      <a href="./insert-cart.php?id=<?=$item['id']?>&soluong=1">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                      </a>
+                    </div>
+                  </div>
               </div>
             </div>
-          </div>
-          <div class="col-sm-6 col-lg-4 all burger">
-            <div class="box">
-              <div>
-                <div class="img-box">
-                  <img src="images/f2.png" alt="">
-                </div>
-                <div class="detail-box">
-                  <h5>
-                    Delicious Burger
-                  </h5>
-                  <p>
-                    Veniam debitis quaerat officiis quasi cupiditate quo, quisquam velit, magnam voluptatem repellendus sed eaque
-                  </p>
-                  <div class="options">
-                    <h6>
-                      $15
-                    </h6>
-                    <a href="">
-                      <i class="fa-solid fa-cart-shopping"></i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6 col-lg-4 all pizza">
-            <div class="box">
-              <div>
-                <div class="img-box">
-                  <img src="images/f3.png" alt="">
-                </div>
-                <div class="detail-box">
-                  <h5>
-                    Delicious Pizza
-                  </h5>
-                  <p>
-                    Veniam debitis quaerat officiis quasi cupiditate quo, quisquam velit, magnam voluptatem repellendus sed eaque
-                  </p>
-                  <div class="options">
-                    <h6>
-                      $17
-                    </h6>
-                    <a href="">
-                      <i class="fa-solid fa-cart-shopping"></i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6 col-lg-4 all pasta">
-            <div class="box">
-              <div>
-                <div class="img-box">
-                  <img src="images/f4.png" alt="">
-                </div>
-                <div class="detail-box">
-                  <h5>
-                    Delicious Pasta
-                  </h5>
-                  <p>
-                    Veniam debitis quaerat officiis quasi cupiditate quo, quisquam velit, magnam voluptatem repellendus sed eaque
-                  </p>
-                  <div class="options">
-                    <h6>
-                      $18
-                    </h6>
-                    <a href="">
-                      <i class="fa-solid fa-cart-shopping"></i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6 col-lg-4 all fries">
-            <div class="box">
-              <div>
-                <div class="img-box">
-                  <img src="images/f5.png" alt="">
-                </div>
-                <div class="detail-box">
-                  <h5>
-                    French Fries
-                  </h5>
-                  <p>
-                    Veniam debitis quaerat officiis quasi cupiditate quo, quisquam velit, magnam voluptatem repellendus sed eaque
-                  </p>
-                  <div class="options">
-                    <h6>
-                      $10
-                    </h6>
-                    <a href="">
-                      <i class="fa-solid fa-cart-shopping"></i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6 col-lg-4 all pizza">
-            <div class="box">
-              <div>
-                <div class="img-box">
-                  <img src="images/f6.png" alt="">
-                </div>
-                <div class="detail-box">
-                  <h5>
-                    Delicious Pizza
-                  </h5>
-                  <p>
-                    Veniam debitis quaerat officiis quasi cupiditate quo, quisquam velit, magnam voluptatem repellendus sed eaque
-                  </p>
-                  <div class="options">
-                    <h6>
-                      $15
-                    </h6>
-                    <a href="">
-                      <i class="fa-solid fa-cart-shopping"></i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6 col-lg-4 all burger">
-            <div class="box">
-              <div>
-                <div class="img-box">
-                  <img src="images/f7.png" alt="">
-                </div>
-                <div class="detail-box">
-                  <h5>
-                    Tasty Burger
-                  </h5>
-                  <p>
-                    Veniam debitis quaerat officiis quasi cupiditate quo, quisquam velit, magnam voluptatem repellendus sed eaque
-                  </p>
-                  <div class="options">
-                    <h6>
-                      $12
-                    </h6>
-                    <a href="">
-                      <i class="fa-solid fa-cart-shopping"></i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6 col-lg-4 all burger">
-            <div class="box">
-              <div>
-                <div class="img-box">
-                  <img src="images/f8.png" alt="">
-                </div>
-                <div class="detail-box">
-                  <h5>
-                    Tasty Burger
-                  </h5>
-                  <p>
-                    Veniam debitis quaerat officiis quasi cupiditate quo, quisquam velit, magnam voluptatem repellendus sed eaque
-                  </p>
-                  <div class="options">
-                    <h6>
-                      $14
-                    </h6>
-                    <a href="">
-                      <i class="fa-solid fa-cart-shopping"></i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6 col-lg-4 all pasta">
-            <div class="box">
-              <div>
-                <div class="img-box">
-                  <img src="images/f9.png" alt="">
-                </div>
-                <div class="detail-box">
-                  <h5>
-                    Delicious Pasta
-                  </h5>
-                  <p>
-                    Veniam debitis quaerat officiis quasi cupiditate quo, quisquam velit, magnam voluptatem repellendus sed eaque
-                  </p>
-                  <div class="options">
-                    <h6>
-                      $10
-                    </h6>
-                    <a href="">
-                      <i class="fa-solid fa-cart-shopping"></i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <?php } ?>
         </div>
       </div>
       <div class="btn-box">

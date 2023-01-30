@@ -32,7 +32,7 @@
 
             <!-- Logo brand -->
             <div class="app-brand">
-                <a href="../index.html" class="">
+                <a href="../index.php" class="">
                     <h5>APP BRAND</h5>
                 </a>
             </div>
@@ -41,7 +41,7 @@
             
             <ul class="menu-inner">
                 <li class="menu-item">
-                    <a href="../index.html" class="menu-link">
+                    <a href="../index.php" class="menu-link">
                         <i class="fa-solid fa-house menu-icon"></i>                        
                         <span>Trang chủ</span>              
                     </a>
@@ -61,13 +61,13 @@
 
                     <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="./list.html" class="menu-link">
+                            <a href="./list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="./add.html" class="menu-link">
+                            <a href="./add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -89,13 +89,13 @@
 
                     <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="../products/list.html" class="menu-link">
+                            <a href="../products/list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="../products/add.html" class="menu-link">
+                            <a href="../products/add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -116,13 +116,13 @@
 
                     <ul class="menu-sub open">
                         <li class="menu-item">
-                            <a href="../orders/list.html" class="menu-link">
+                            <a href="../orders/list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="../orders/add.html" class="menu-link">
+                            <a href="../orders/add.php" class="menu-link active">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -166,7 +166,7 @@
                                         <li class="divider"></li>
 
                                         <li class="dropdown-item">
-                                            <a href="../my-profile.html" class="dropdown-link">
+                                            <a href="../my-profile.php" class="dropdown-link">
                                                 <i class="fa-regular fa-address-card"></i>
                                                 <span>Thông tin tài khoản</span>
                                             </a>
@@ -190,7 +190,7 @@
                                         <li class="divider"></li>
 
                                         <li class="dropdown-item">
-                                            <a href="" class="dropdown-link">
+                                            <a href="../../logout.php" class="dropdown-link">
                                                 <i class="fa-solid fa-power-off"></i>
                                                 <span>Đăng xuất</span>
                                             </a>
@@ -210,8 +210,8 @@
                     <div class="col-md-12">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb ms-4">
-                                <li class="breadcrumb-item"><a href="../index.html" class="text-decoration-none fs-5">Trang chủ</a></li>
-                                <li class="breadcrumb-item"><a href="./add.html" class="text-decoration-none fs-5">Khách hàng</a></li>
+                                <li class="breadcrumb-item"><a href="../index.php" class="text-decoration-none fs-5">Trang chủ</a></li>
+                                <li class="breadcrumb-item"><a href="./add.php" class="text-decoration-none fs-5">Khách hàng</a></li>
                                 <li class="breadcrumb-item active fs-5" aria-current="page">Thêm tài khoản</li>
                             </ol>
                         </nav>

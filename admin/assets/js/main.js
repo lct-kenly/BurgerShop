@@ -79,6 +79,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 })
 
+//Show password
+$('.show-password').click(function () {
+    const parent = $(this).parent();
+    if($(this).hasClass('hide'))  {
+
+        $(this).removeClass('hide');
+        $(this).addClass('show');
+
+        $(parent).children('input').attr('type', 'text');
+
+        $(this).children('i').removeClass('fa-eye');
+        $(this).children('i').addClass('fa-eye-slash');
+    } else {
+        $(this).removeClass('show');
+        $(this).addClass('hide');
+
+        $(parent).children('input').attr('type', 'password');
+
+        $(this).children('i').removeClass('fa-eye-slash');
+        $(this).children('i').addClass('fa-eye');
+    }
+})
+
 //upload file image
 function uploadFile(inputFile, grid) {
     // Khởi tạo đối tượng FileReader

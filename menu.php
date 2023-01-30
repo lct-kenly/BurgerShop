@@ -1,3 +1,18 @@
+<?php 
+    $conn = mysqli_connect('localhost', 'root', '', 'burger-shop') or die('Couldn\'t connect to Database');
+
+    $error = array();
+    session_start();
+
+    if(isset($_SESSION['user_logged'])) {
+        $user = $_SESSION['user_logged'];
+
+        include('./libs/helper.php');
+
+        $countID_cart = get_count_cart($conn, $user['id']) ?? 0;
+
+    }
+?>
 <!DOCTYPE html>
 <html>
 
@@ -42,7 +57,7 @@
     <header class="header_section">
       <div class="container">
         <nav class="navbar navbar-expand-lg custom_nav-container ">
-          <a class="navbar-brand" href="index.html">
+          <a class="navbar-brand" href="index.php">
             <span>
               Feane
             </span>
@@ -55,22 +70,25 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav  mx-auto ">
               <li class="nav-item">
-                <a class="nav-link" href="index.html">Home </a>
+                <a class="nav-link" href="index.php">Home </a>
               </li>
               <li class="nav-item active">
-                <a class="nav-link" href="menu.html">Menu <span class="sr-only">(current)</span> </a>
+                <a class="nav-link" href="menu.php">Menu <span class="sr-only">(current)</span> </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="about.html">About</a>
+                <a class="nav-link" href="about.php">About</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="book.html">Book Table</a>
+                <a class="nav-link" href="cart.php">Cart</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="book.php">Book Table</a>
               </li>
             </ul>
             <div class="user_option">
               <a class="cart_link" href="#">
                 <i class="fa-solid fa-cart-shopping"></i>
-                <span>3</span>
+                <span><?php echo $countID_cart ?? 0;?></span>
               </a>
 
               <div class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
@@ -89,10 +107,36 @@
                 </form>
               </div>
               
-              <a href="account.html" class="user_link">
-                <i class="fa fa-user mr-2" aria-hidden="true"></i>
-                Đăng nhập
-              </a>
+              <?php if(isset($user)) { ?>
+                <div class="grid-logged">
+                  <button class="user_logged btn-show-nav-sub" type="button">
+                      <img src="<?php echo !empty($user['avatar']) ? './storage/uploads/'.$user['avatar'] : './images/avatar-.jpg'?>" alt="">
+                      <span><?=$user['ten_tai_khoan']?></span>
+                    </button>
+                    <ul class="nav-sub-logged">
+                        <li>
+                          <img src="<?php echo !empty($user['avatar']) ? './storage/uploads/'.$user['avatar'] : './images/avatar-.jpg'?>" alt="">
+                          <span><?=$user['ten_tai_khoan']?></span>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                          <a href="./profile.php"><i class="fa-regular fa-user"></i> Thông tin tài khoản</a>
+                        </li>
+                        <li>
+                          <a href="./order.php"><i class="fa-solid fa-list-check"></i> Đơn hàng của bạn</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                          <a href="./logout.php"><i class="fa-solid fa-power-off"></i> Đăng xuất</a>
+                        </li>
+                    </ul>
+                </div>
+              <?php } else { ?>
+                <a href="account.php" class="user_link">
+                  <i class="fa fa-user mr-2" aria-hidden="true"></i>
+                  Đăng nhập
+                </a>
+              <?php } ?>
             </div>
           </div>
         </nav>

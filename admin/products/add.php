@@ -1,3 +1,84 @@
+<?php 
+    $conn = mysqli_connect('localhost', 'root', '', 'burger-shop') or die('Couldn\'t connect to Database');
+
+    session_start();
+    date_default_timezone_set('Asia/Ho_Chi_Minh'); 
+    $date_current = '';
+    $date_current = date("Y-m-d H:i:s");
+
+    if(!isset($_SESSION['admin_logged'])) {
+        header('location: ../../login.php');
+    }
+
+    $error = array();
+
+    $sql = "SELECT * FROM loai_hang";
+    $query = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_assoc($query)) {
+        $loaihang[] = $row;
+    }
+
+    if(isset($_POST['submit']) && $_POST['submit'] == 'submit') {
+        $ten_sp = isset($_POST['ten_sp']) ? addslashes($_POST['ten_sp']) : '';
+        $mo_ta = isset($_POST['mo_ta']) ? addslashes($_POST['mo_ta']) : '';
+        $don_gia_nhap = isset($_POST['don_gia_nhap']) ? addslashes($_POST['don_gia_nhap']) : '';
+        $don_gia_ban = isset($_POST['don_gia_ban']) ? addslashes($_POST['don_gia_ban']) : '';
+        $so_luong_kho = isset($_POST['so_luong_kho']) ? addslashes($_POST['so_luong_kho']) : '';
+        $ngay_nhap = isset($_POST['ngay_nhap']) ? date_format(date_create($_POST['ngay_nhap']), 'Y-m-d H:i:s') : $date_current;
+        $id_loai = isset($_POST['id_loai']) ? addslashes($_POST['id_loai']) : '';
+
+        $hinh_anh = $_FILES["hinh_anh"]["name"];
+        $tempname = $_FILES["hinh_anh"]["tmp_name"];
+        $folder = "../../storage/uploads/" . $hinh_anh;
+
+        if(empty($ten_sp)) {
+            $error['ten_sp'] = 'Bạn chưa nhập tên sản phẩm';
+        }
+
+        if(empty($don_gia_nhap)) {
+            $error['don_gia_nhap'] = 'Bạn chưa nhập đơn giá nhập';
+        }
+
+        if(empty($don_gia_ban)) {
+            $error['don_gia_ban'] = 'Bạn chưa nhập đơn giá bán';
+        }
+
+        if(empty($so_luong_kho)) {
+            $error['so_luong_kho'] = 'Bạn chưa nhập số lượng kho';
+        }
+
+        if(empty($mo_ta)) {
+            $error['mo_ta'] = 'Bạn chưa nhập mô tả sản phẩm';
+        }
+
+        if(empty($id_loai)) {
+            $error['id_loai'] = 'Bạn chưa chọn id loại hàng';
+        }
+
+        if($_FILES['hinh_anh']['error'] > 0) {
+            $error['hinh_anh'] = 'Bạn chọn hình ảnh sản phẩm';
+        } else {
+            move_uploaded_file($tempname ,$folder);
+        }
+
+
+
+        if(!($error)) {
+            $sql = "INSERT INTO `san_pham`(`ten_san_pham`, `don_gia_nhap`, `don_gia_ban`, `so_luong`, `mo_ta`, `hinh_anh`, `id_loai_hang`, `created_at`) VALUES ('{$ten_sp}','{$don_gia_nhap}','{$don_gia_ban}','{$so_luong_kho}','{$mo_ta}','{$hinh_anh}','{$id_loai}','{$ngay_nhap}')";
+
+            if(mysqli_query($conn, $sql)) {
+                echo "<script>
+                        alert('Thêm sản phẩm thành công!');
+                     </script>";
+            } else {
+                echo "<script>
+                        alert('Có lỗi trong quá trình xử lý, Vui lòng thử lại!');
+                     </script>";
+            }
+        }
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,13 +94,13 @@
 
 
     <!-- Base CSS -->
-    <link rel="stylesheet" href="./assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
 
     <!-- Style CSS -->
-    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 
     <!-- Responsive CSS -->
-    <link rel="stylesheet" href="./assets/css/responsive.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
 
     <title>ADMIN</title>
 </head>
@@ -32,18 +113,16 @@
 
             <!-- Logo brand -->
             <div class="app-brand">
-                <a href="" class="">
+                <a href="../index.php" class="">
                     <h5>APP BRAND</h5>
                 </a>
             </div>
 
-            <button type="button" class="btn-close-nav-mobile" data-bs-dismiss="offcanvas"><i class="fa-solid fa-angle-left"></i></button>
-
             <!-- Menu inner -->
             
             <ul class="menu-inner">
-                <li class="menu-item active">
-                    <a href="./index.html" class="menu-link active">
+                <li class="menu-item">
+                    <a href="../index.php" class="menu-link">
                         <i class="fa-solid fa-house menu-icon"></i>                        
                         <span>Trang chủ</span>              
                     </a>
@@ -63,13 +142,13 @@
 
                     <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="./users/list.html" class="menu-link">
+                            <a href="../users/list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="./users/add.html" class="menu-link">
+                            <a href="../users/add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -83,21 +162,21 @@
                     <span>Products</span>
                 </li>
 
-                <li class="menu-item">
-                    <a href="" class="menu-link menu-toggle">
+                <li class="menu-item active">
+                    <a href="" class="menu-link menu-toggle active">
                         <i class="fa-solid fa-burger menu-icon"></i>                      
                         <span>Sản phẩm</span>              
                     </a>
 
-                    <ul class="menu-sub">
+                    <ul class="menu-sub open">
                         <li class="menu-item">
-                            <a href="./products/list.html" class="menu-link">
+                            <a href="./list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="./products/add.html" class="menu-link">
+                            <a href="./add.php" class="menu-link active">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -118,13 +197,13 @@
 
                     <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="./orders/list.html" class="menu-link">
+                            <a href="../orders/list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="./orders/add.html" class="menu-link">
+                            <a href="../orders/add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -154,11 +233,11 @@
                             <div class="page-header-right">
                                 <div class="profile">
                                     <button class="dropdown-btn">
-                                        <img src="./assets/img/1.png" alt="avatar" class="avatar">
+                                        <img src="../assets/img/1.png" alt="avatar" class="avatar">
                                     </button>
                                     <ul class="dropdown">
                                         <li class="dropdown-item">
-                                            <img src="./assets/img/1.png" alt="avatar" class="avatar">
+                                            <img src="../assets/img/1.png" alt="avatar" class="avatar">
                                             <div class="dropdown-content">
                                                 <p>Thanh</p>
                                                 <span>Admin</span>
@@ -168,7 +247,7 @@
                                         <li class="divider"></li>
 
                                         <li class="dropdown-item">
-                                            <a href="" class="dropdown-link">
+                                            <a href="../my-profile.php" class="dropdown-link">
                                                 <i class="fa-regular fa-address-card"></i>
                                                 <span>Thông tin tài khoản</span>
                                             </a>
@@ -192,7 +271,7 @@
                                         <li class="divider"></li>
 
                                         <li class="dropdown-item">
-                                            <a href="" class="dropdown-link">
+                                            <a href="../../logout.php" class="dropdown-link">
                                                 <i class="fa-solid fa-power-off"></i>
                                                 <span>Đăng xuất</span>
                                             </a>
@@ -208,90 +287,82 @@
 
             <!-- Page content -->
             <div class="container-fluid">
+                <!-- <div class="row mt-4">
+                    <div class="col-md-12">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb ms-4">
+                                <li class="breadcrumb-item"><a href="../index.php" class="text-decoration-none fs-5">Trang chủ</a></li>
+                                <li class="breadcrumb-item"><a href="./add.php" class="text-decoration-none fs-5">Khách hàng</a></li>
+                                <li class="breadcrumb-item active fs-5" aria-current="page">Thêm tài khoản</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div> -->
                 <div class="row">
                     <div class="col-md-12">
                         <div class="page-content bg-white rounded-3">
-                            <div class="page-content-header p-4">
-                                <h5>Thông tin tài khoản</h5>
-                                <div class="d-flex mt-4">
-                                    <img src="./assets/img/1.png" alt="">
-                                    <div>
-                                        <div>
-                                            <label for="avatar" class="form-label btn btn-upload"></label>
-                                            <input type="file" class="form-control" id="avatar" name="avatar" form="form-profile">
-
-                                            <a href="" class="btn btn-outline-secondary btn-reset"></a>
-                                        </div>
-
-                                        <p class="mt-4">Allowed JPG, JPEG or PNG. Max size of 800K</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="divider"></div>
-
-                            <form class="p-4" id="form-profile">
+                            <form class="p-4" method="POST" action="add.php" enctype="multipart/form-data">
                                 <div class="form-group-flex">
                                     <div class="form-group">
-                                        <label for="fullname" class="form-label">Họ tên</label>
-                                        <input type="text" class="form-control" id="fullname" placeholder="VD: Nguyễn Văn A">
+                                        <label for="ten_sp" class="form-label">Tên sản phẩm</label>
+                                        <input type="text" class="form-control" id="ten_sp" name="ten_sp" placeholder="VD: Burger">
+                                        <span class="form-text ms-3 text-danger"><?php echo !(empty($error['ten_sp'])) ? $error['ten_sp'] : ''; ?></span>
                                     </div>
                                     <div class="form-group">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="email" placeholder="VD: example@gmail.com">
+                                        <label for="mo_ta" class="form-label">Mô tả</label>
+                                        <textarea class="form-control" name="mo_ta" id="mo_ta" cols="30" rows="1"></textarea>
+                                        <span class="form-text ms-3 text-danger"><?php echo !(empty($error['mo_ta'])) ? $error['mo_ta'] : ''; ?></span>
                                     </div>
                                 </div>
 
                                 <div class="form-group-flex">
                                     <div class="form-group">
-                                        <label for="account" class="form-label">Tên tài khoản</label>
-                                        <input type="text" class="form-control" id="account" name="fullname" placeholder="VD: abc123">
+                                        <label for="don_gia_nhap" class="form-label">Đơn giá nhập</label>
+                                        <input type="number" class="form-control" id="don_gia_nhap" name="don_gia_nhap" placeholder="VD: $15">
+                                        <span class="form-text ms-3 text-danger"><?php echo !(empty($error['don_gia_nhap'])) ? $error['don_gia_nhap'] : ''; ?></span>
                                     </div>
                                     <div class="form-group">
-                                        <label for="password" class="form-label">Mật khẩu</label>
-                                        <input type="password" class="form-control" id="password" name="password" placeholder="******">
+                                        <label for="don_gia_ban" class="form-label">Đơn giá bán</label>
+                                        <input type="number" class="form-control" id="don_gia_ban" name="don_gia_ban" placeholder="VD: $20">
+                                        <span class="form-text ms-3 text-danger"><?php echo !(empty($error['don_gia_ban'])) ? $error['don_gia_ban'] : ''; ?></span>
                                     </div>
                                 </div>
 
-                                <div class="form-group-flex">
+                                <div class="form-group-flex align-items-start">
                                     <div class="form-group">
-                                        <label for="phone" class="form-label">Số điện thoại</label>
-                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="VD: 0123456789">
+                                        <label for="so_luong_kho" class="form-label">Số lượng kho</label>
+                                        <input type="number" class="form-control" id="so_luong_kho" name="so_luong_kho" placeholder="VD: 10">
+                                        <span class="form-text ms-3 text-danger"><?php echo !(empty($error['so_luong_kho'])) ? $error['so_luong_kho'] : ''; ?></span>
                                     </div>
                                     <div class="form-group">
-                                        <label for="address" class="form-label">Địa chỉ</label>
-                                        <textarea class="form-control" name="address" id="address" name="address" cols="30" rows="1"></textarea>
+                                        <label for="ngay_nhap" class="form-label">Ngày nhập</label>
+                                        <input type="datetime-local" class="form-control" id="ngay_nhap" name="ngay_nhap">
                                     </div>
                                 </div>
-                                <div class="form-group-flex">
+
+                                <div class="form-group-flex align-items-start">
                                     <div class="form-group">
-                                        <label for="phone" class="form-label">Level</label>
-                                        <select class="form-select" name="level" aria-label="Default select example">
-                                            <option value="0">0 - Admin</option>
-                                            <option value="1">1 - User</option>
+                                        <label for="id_loai" class="form-label">ID loại hàng</label>
+                                        <select class="form-select" name="id_loai" aria-label="Default select example">
+                                            <?php foreach ($loaihang as $item) { ?>
+                                                <option value="<?=$item['id']?>">
+                                                    <?=$item['id'] . " - " . $item['ten_loai']?> 
+                                                </option>
+                                            <?php } ?>
                                           </select>
+                                          <span class="form-text ms-3 text-danger"><?php echo !(empty($error['id_loai'])) ? $error['id_loai'] : ''; ?></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="hinh_anh" class="form-label">Hình ảnh</label>
+                                        <input type="file" class="form-control" id="hinh_anh" name="hinh_anh" accept=".jpg, .png, .jpeg">
+                                        <p class="form-text">Allowed JPG, JPEG or PNG. Max size of 800K</p>
+                                        <div class="grid-img">
+                                            <img src="../assets/img/avatar-default.jpg" alt="upload-hinh-anh-san-pham">
+                                        </div>
                                     </div>
                                 </div>
                                 <button type="submit" name="submit" value="submit" class="btn-submit-form">Xác nhận</button>
                             </form>
-                        </div>
-
-                        <div class="page-content-second bg-white rounded-3 mt-3 mx-3 p-4 ">
-                            <h5>Xóa tài khoản</h5>
-
-                            <p class="my-3 p-3 bg-warning bg-opacity-10 rounded-3 text-warning">
-                                <span class="fw-bold">Are you sure you want to delete your account?</span> <br>
-                                Once you delete your account, there is no going back. Please be certain.
-                            </p>
-
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" name="check-delete-account">
-                                <label class="form-check-label" for="flexCheckDefault">
-                                  Xác nhận xóa tài khoản
-                                </label>
-                            </div>
-
-                            <a href="" class="btn btn-danger mt-3 btn-delete-account disabled">Xóa tài khoản</a>
                         </div>
                     </div>
                 </div>
@@ -305,35 +376,15 @@
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 
-    <script src="./assets/js/main.js"></script>
+    <script src="../assets/js/main.js"></script>
 
     <script>
+        const inputFile = document.querySelector('input[name="hinh_anh"]');
+        const gridImg = document.querySelector('.grid-img');
 
-        // change inner html input avatar, button reset
-        if(window.innerWidth < 576) {
-            document.querySelector('.btn-upload').innerHTML = '<i class="fa-solid fa-upload"></i>';
-            document.querySelector('.btn-reset').innerHTML = '<i class="fa-solid fa-rotate-right"></i>';
-        } else {
-            document.querySelector('.btn-upload').innerHTML = 'Upload new photo';
-            document.querySelector('.btn-reset').innerHTML = 'Reset';
-        }
-
-
-
-        // on/off disabled button delete account
-
-        const checkBoxDelete = document.querySelector('input[name="check-delete-account"]');
-        const checkBtnDelete = document.querySelector('.btn-delete-account');
-        checkBoxDelete.onchange = function() {
-            if(checkBoxDelete.checked) {
-                checkBtnDelete.classList.remove('disabled');
-            } else {
-                checkBtnDelete.classList.add('disabled');
-            }
-        }
+        uploadFile(inputFile, gridImg);
 
 
     </script>
-
 </body>
 </html>

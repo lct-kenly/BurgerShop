@@ -1,48 +1,64 @@
+<?php 
+    $conn = mysqli_connect('localhost', 'root', '', 'burger-shop') or die('Couldn\'t connect to Database');
+
+    $error = array();
+    session_start();
+
+    if(isset($_SESSION['user_logged'])) {
+        $user = $_SESSION['user_logged'];
+
+        include('./libs/helper.php');
+
+        $countID_cart = get_count_cart($conn, $user['id']) ?? 0;
+
+    }
+
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <head>
-        <!-- Basic -->
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <!-- Mobile Metas -->
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <!-- Site Metas -->
-        <meta name="keywords" content="" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <link rel="shortcut icon" href="images/favicon.png" type="">
-      
-        <title> Feane </title>
-      
-        <!-- bootstrap core css -->
-        <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
-      
-        <!--owl slider stylesheet -->
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
-        <!-- nice select  -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/css/nice-select.min.css" integrity="sha512-CruCP+TD3yXzlvvijET8wV5WxxEh5H8P4cmz0RFbKK6FlZ2sYl3AEsKlLPHbniXKSrDdFewhbmBK5skbdsASbQ==" crossorigin="anonymous" />
-        <!-- font awesome style -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" rel="stylesheet" />
-      
-        <!-- Custom styles for this template -->
-        <link href="css/style.css" rel="stylesheet" />
-        <!-- responsive style -->
-        <link href="css/responsive.css" rel="stylesheet" />
-      
-      </head>
-      
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <link rel="shortcut icon" href="images/favicon.png" type="">
+
+  <title> Feane </title>
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+
+  <!--owl slider stylesheet -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+  <!-- nice select  -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/css/nice-select.min.css" integrity="sha512-CruCP+TD3yXzlvvijET8wV5WxxEh5H8P4cmz0RFbKK6FlZ2sYl3AEsKlLPHbniXKSrDdFewhbmBK5skbdsASbQ==" crossorigin="anonymous" />
+  <!-- font awesome style -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" rel="stylesheet" />
+
+  <!-- Custom styles for this template -->
+  <link href="css/style.css" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="css/responsive.css" rel="stylesheet" />
+
 </head>
-<body>
-  <div class="">
-    <div class="bg-account">
-      <!-- <img src="images/hero-bg.jpg" alt=""> -->
+
+<body class="sub_page">
+
+  <div class="hero_area">
+    <div class="bg-box">
+      <img src="images/hero-bg.jpg" alt="">
     </div>
     <!-- header section strats -->
-    <header class="header_section__account">
+    <header class="header_section">
       <div class="container">
         <nav class="navbar navbar-expand-lg custom_nav-container ">
-          <a class="navbar-brand" href="index.html">
+          <a class="navbar-brand" href="index.php">
             <span>
               Feane
             </span>
@@ -54,23 +70,26 @@
 
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav  mx-auto ">
-              <li class="nav-item">
-                <a class="nav-link" href="index.html">Home </a>
+              <li class="nav-item ">
+                <a class="nav-link" href="index.php">Home </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="menu.html">Menu</a>
+                <a class="nav-link" href="menu.php">Menu</a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="about.php">About <span class="sr-only">(current)</span> </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="about.html">About</a>
+                <a class="nav-link" href="cart.php">Cart</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="book.html">Book Table <span class="sr-only">(current)</span> </a>
+                <a class="nav-link" href="book.php">Book Table</a>
               </li>
             </ul>
             <div class="user_option">
               <a class="cart_link" href="#">
                 <i class="fa-solid fa-cart-shopping"></i>
-                <span>3</span>
+                <span><?php echo $countID_cart ?? 0; ?></span>
               </a>
 
               <div class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
@@ -89,10 +108,36 @@
                 </form>
               </div>
               
-              <a href="account.html" class="user_link">
-                <i class="fa fa-user mr-2" aria-hidden="true"></i>
-                Đăng nhập
-              </a>
+              <?php if(isset($user)) { ?>
+                <div class="grid-logged">
+                  <button class="user_logged btn-show-nav-sub" type="button">
+                      <img src="<?php echo !empty($user['avatar']) ? './storage/uploads/'.$user['avatar'] : './images/avatar-.jpg'?>" alt="">
+                      <span><?=$user['ten_tai_khoan']?></span>
+                    </button>
+                    <ul class="nav-sub-logged">
+                        <li>
+                          <img src="<?php echo !empty($user['avatar']) ? './storage/uploads/'.$user['avatar'] : './images/avatar-.jpg'?>" alt="">
+                          <span><?=$user['ten_tai_khoan']?></span>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                          <a href="./profile.php"><i class="fa-regular fa-user"></i> Thông tin tài khoản</a>
+                        </li>
+                        <li>
+                          <a href="./order.php"><i class="fa-solid fa-list-check"></i> Đơn hàng của bạn</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                          <a href="./logout.php"><i class="fa-solid fa-power-off"></i> Đăng xuất</a>
+                        </li>
+                    </ul>
+                </div>
+              <?php } else { ?>
+                <a href="account.php" class="user_link">
+                  <i class="fa fa-user mr-2" aria-hidden="true"></i>
+                  Đăng nhập
+                </a>
+              <?php } ?>
             </div>
           </div>
         </nav>
@@ -101,48 +146,42 @@
     <!-- end header section -->
   </div>
 
-<!-- Start Account Section -->
-  <section class="account_section layout_padding">
-    <div class="container">
-      <div class="heading_container-account">
-        <h2 class="account-title">
-          Log In
-        </h2>
-      </div>
+  <!-- about section -->
+
+  <section class="about_section layout_padding">
+    <div class="container  ">
+
       <div class="row">
-        <div class="col-md-12">
-          <div class="form_container">
-            <form action="">
-              <div>
-                <input type="text" class="form-control" placeholder="Username" />
-              </div>
-              <div>
-                <input type="password" class="form-control" placeholder="Password" />
-                <span class="show-password"><i class="fa-regular fa-eye"></i></span>
-              </div>
-              <div class="account-register">
-                <p>Don't have account? <a href="register.html" class="register-link"> Sign up here</a></p>
-              </div>
-              <div class="btn_box">
-                <button>
-                  Log In
-                </button>
-              </div>
-            </form>
+        <div class="col-md-6 ">
+          <div class="img-box">
+            <img src="images/about-img.png" alt="">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="detail-box">
+            <div class="heading_container">
+              <h2>
+                We Are Feane
+              </h2>
+            </div>
+            <p>
+              There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration
+              in some form, by injected humour, or randomised words which don't look even slightly believable. If you
+              are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in
+              the middle of text. All
+            </p>
+            <a href="">
+              Read More
+            </a>
           </div>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- end about section -->
 
-
-
-
-
-
-<!-- End Account Section -->
-
+  <!-- footer section -->
   <footer class="footer_section">
     <div class="container">
       <div class="row">
@@ -208,7 +247,7 @@
             Everyday
           </p>
           <p>
-            10.00 Am -10.00 Pm
+            10.00 Am -10.01 Pm
           </p>
         </div>
       </div>
@@ -216,7 +255,7 @@
         <p>
           &copy; <span id="displayYear"></span>
           <a href="https://html.design/"></a><br><br>
-          &copy; <span id="displayYear"></span> 
+          &copy; <span id="displayYear"></span>
           <a href="https://themewagon.com/" target="_blank"></a>
         </p>
       </div>
@@ -246,4 +285,5 @@
   <!-- End Google Map -->
 
 </body>
+
 </html>

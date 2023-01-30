@@ -1,3 +1,50 @@
+<?php
+    $conn = mysqli_connect('localhost', 'root', '', 'burger-shop') or die('Couldn\'t connect to Database');
+
+    $error = array();
+    session_start();
+    $donhang = array();
+    $sanpham_donhang = array();
+
+
+    if(isset($_SESSION['user_logged'])) {
+        $user = $_SESSION['user_logged'];
+
+        include('./libs/helper.php');
+
+        $countID_cart = get_count_cart($conn, $user['id']) ?? 0;
+
+
+        $sql = "SELECT don_hang.ma_don_hang, don_hang.trang_thai
+                FROM don_hang
+                WHERE don_hang.id_khach_hang = {$user['id']}";
+        $query = mysqli_query($conn, $sql);
+        while($row = mysqli_fetch_assoc($query)) {
+            $donhang[] = $row;
+        }
+
+        function get_san_pham($id_don_hang, $conn) {
+            $san_pham = array();
+            $sql = "SELECT san_pham.ten_san_pham, san_pham.hinh_anh, chi_tiet_don_hang.so_luong, chi_tiet_don_hang.don_gia, chi_tiet_don_hang.tri_gia
+                    FROM san_pham, chi_tiet_don_hang
+                    WHERE san_pham.id = chi_tiet_don_hang.id_san_pham AND chi_tiet_don_hang.ma_don_hang={$id_don_hang}";
+            $query = mysqli_query($conn, $sql);
+
+            while($row = mysqli_fetch_assoc($query)) {
+                $san_pham[] = $row;
+            }
+
+            return $san_pham;
+        }
+
+    } else {
+        echo "<script>
+                alert('Vui lòng đăng nhập để tiếp tục!');
+                window.location.href = './login.php';
+            </script>";
+    }
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -42,7 +89,7 @@
     <header class="header_section">
       <div class="container">
         <nav class="navbar navbar-expand-lg custom_nav-container ">
-          <a class="navbar-brand" href="index.html">
+          <a class="navbar-brand" href="index.php">
             <span>
               Feane
             </span>
@@ -55,22 +102,25 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav  mx-auto ">
               <li class="nav-item">
-                <a class="nav-link" href="index.html">Home </a>
+                <a class="nav-link" href="index.php">Home </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="menu.html">Menu</a>
+                <a class="nav-link" href="menu.php">Menu</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="about.html">About</a>
+                <a class="nav-link" href="about.php">About</a>
               </li>
-              <li class="nav-item active">
-                <a class="nav-link" href="book.html">Book Table <span class="sr-only">(current)</span> </a>
+              <li class="nav-item">
+                <a class="nav-link" href="about.php">Cart</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="book.php">Book Table <span class="sr-only">(current)</span> </a>
               </li>
             </ul>
             <div class="user_option">
               <a class="cart_link" href="#">
                 <i class="fa-solid fa-cart-shopping"></i>
-                <span>3</span>
+                <span><?php echo $countID_cart ?? 0;?></span>
               </a>
 
               <div class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
@@ -89,9 +139,36 @@
                 </form>
               </div>
               
-              <a href="account.html" class="user_link">
-                <i class="fa fa-user mr-2" aria-hidden="true"></i>
-                Đăng nhập
+              <?php if(isset($user)) { ?>
+                <div class="grid-logged">
+                  <button class="user_logged btn-show-nav-sub" type="button">
+                      <img src="<?php echo !empty($user['avatar']) ? './storage/uploads/'.$user['avatar'] : './images/avatar-.jpg'?>" alt="">
+                      <span><?=$user['ten_tai_khoan']?></span>
+                    </button>
+                    <ul class="nav-sub-logged">
+                        <li>
+                          <img src="<?php echo !empty($user['avatar']) ? './storage/uploads/'.$user['avatar'] : './images/avatar-.jpg'?>" alt="">
+                          <span><?=$user['ten_tai_khoan']?></span>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                          <a href="./profile.php"><i class="fa-regular fa-user"></i> Thông tin tài khoản</a>
+                        </li>
+                        <li>
+                          <a href="./order.php"><i class="fa-solid fa-list-check"></i> Đơn hàng của bạn</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                          <a href="./logout.php"><i class="fa-solid fa-power-off"></i> Đăng xuất</a>
+                        </li>
+                    </ul>
+                </div>
+              <?php } else { ?>
+                <a href="account.php" class="user_link">
+                  <i class="fa fa-user mr-2" aria-hidden="true"></i>
+                  Đăng nhập
+                </a>
+              <?php } ?>
               </a>
             </div>
           </div>
@@ -104,58 +181,44 @@
   <!-- book section -->
   <section class="book_section layout_padding">
     <div class="container">
-      <div class="heading_container">
-        <h2>
-          Book A Table
+      <div class="heading_container mb-5">
+        <h2 class="text-center w-100">
+          SHOPPING CART
         </h2>
       </div>
       <div class="row">
-        <div class="col-md-6">
-          <div class="form_container">
-            <form action="">
-              <div>
-                <input type="text" class="form-control" placeholder="Your Name" />
-              </div>
-              <div>
-                <input type="text" class="form-control" placeholder="Phone Number" />
-              </div>
-              <div>
-                <input type="email" class="form-control" placeholder="Your Email" />
-              </div>
-              <div>
-                <select class="form-control nice-select wide">
-                  <option value="" disabled selected>
-                    How many persons?
-                  </option>
-                  <option value="">
-                    2
-                  </option>
-                  <option value="">
-                    3
-                  </option>
-                  <option value="">
-                    4
-                  </option>
-                  <option value="">
-                    5
-                  </option>
-                </select>
-              </div>
-              <div>
-                <input type="date" class="form-control">
-              </div>
-              <div class="btn_box">
-                <button>
-                  Book Now
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="map_container ">
-            <div id="googleMap"></div>
-          </div>
+        <div class="col-md-8 offset-md-2">
+            <?php foreach($donhang as $item ) { 
+                    $sanpham_donhang = get_san_pham($item['ma_don_hang'], $conn);
+                    $sum = 0;
+            ?>
+                
+                    <div class="card mt-5">
+                        <div class="card-header d-flex align-items-center justify-content-between">
+                            <p>Mã đơn hàng: <?=$item['ma_don_hang']?></p>
+                            <p>Trạng thái: <?=$item['trang_thai'] == 0 ? 'Đang xử lý' : 'Đã giao hàng thành công'?></p>
+                        </div>
+                        <div class="card-body">
+                            <?php foreach($sanpham_donhang as $value) {
+                                $sum += $value['tri_gia'];
+                            ?>
+                                <div class="d-flex mt-4">
+                                    <div><img src="./storage/uploads/<?=$value['hinh_anh']?>" alt="" style="width: 80px; height: 80px;"></div>
+                                    <div class="ml-3 w-100">
+                                        <p><?=$value['ten_san_pham']?></p>
+                                        <div class="d-flex align-items-center justify-content-between w-100">
+                                            <p>x <?=$value['so_luong']?></p>
+                                            <p>$<?=$value['don_gia']?></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                        </div>
+                        <div class="card-footer">
+                            <p class="text-right">Tổng cộng: $<?=$sum?> </p>
+                        </div>
+                    </div>
+            <?php } ?>
         </div>
       </div>
     </div>

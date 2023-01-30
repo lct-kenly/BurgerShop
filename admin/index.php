@@ -13,13 +13,13 @@
 
 
     <!-- Base CSS -->
-    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="./assets/css/base.css">
 
     <!-- Style CSS -->
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
 
     <!-- Responsive CSS -->
-    <link rel="stylesheet" href="../assets/css/responsive.css">
+    <link rel="stylesheet" href="./assets/css/responsive.css">
 
     <title>ADMIN</title>
 </head>
@@ -32,16 +32,18 @@
 
             <!-- Logo brand -->
             <div class="app-brand">
-                <a href="../index.html" class="">
+                <a href="" class="">
                     <h5>APP BRAND</h5>
                 </a>
             </div>
 
+            <button type="button" class="btn-close-nav-mobile" data-bs-dismiss="offcanvas"><i class="fa-solid fa-angle-left"></i></button>
+
             <!-- Menu inner -->
             
             <ul class="menu-inner">
-                <li class="menu-item">
-                    <a href="../index.html" class="menu-link">
+                <li class="menu-item active">
+                    <a href="./index.php" class="menu-link active">
                         <i class="fa-solid fa-house menu-icon"></i>                        
                         <span>Trang chủ</span>              
                     </a>
@@ -53,21 +55,21 @@
                     <span>Users</span>
                 </li>
 
-                <li class="menu-item active">
-                    <a href="" class="menu-link menu-toggle active">
+                <li class="menu-item">
+                    <a href="" class="menu-link menu-toggle">
                         <i class="fa-solid fa-user menu-icon"></i>                       
                         <span>Khách hàng</span>              
                     </a>
 
-                    <ul class="menu-sub open">
+                    <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="./list.html" class="menu-link">
+                            <a href="./users/list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="./add.html" class="menu-link active">
+                            <a href="./users/add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -89,13 +91,13 @@
 
                     <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="../products/list.html" class="menu-link">
+                            <a href="./products/list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="../products/add.html" class="menu-link">
+                            <a href="./products/add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -116,13 +118,13 @@
 
                     <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="../orders/list.html" class="menu-link">
+                            <a href="./orders/list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="../orders/add.html" class="menu-link">
+                            <a href="./orders/add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -152,11 +154,11 @@
                             <div class="page-header-right">
                                 <div class="profile">
                                     <button class="dropdown-btn">
-                                        <img src="../assets/img/1.png" alt="avatar" class="avatar">
+                                        <img src="./assets/img/1.png" alt="avatar" class="avatar">
                                     </button>
                                     <ul class="dropdown">
                                         <li class="dropdown-item">
-                                            <img src="../assets/img/1.png" alt="avatar" class="avatar">
+                                            <img src="./assets/img/1.png" alt="avatar" class="avatar">
                                             <div class="dropdown-content">
                                                 <p>Thanh</p>
                                                 <span>Admin</span>
@@ -166,7 +168,7 @@
                                         <li class="divider"></li>
 
                                         <li class="dropdown-item">
-                                            <a href="../my-profile.html" class="dropdown-link">
+                                            <a href="./my-profile.php" class="dropdown-link">
                                                 <i class="fa-regular fa-address-card"></i>
                                                 <span>Thông tin tài khoản</span>
                                             </a>
@@ -190,7 +192,7 @@
                                         <li class="divider"></li>
 
                                         <li class="dropdown-item">
-                                            <a href="" class="dropdown-link">
+                                            <a href="../logout.php" class="dropdown-link">
                                                 <i class="fa-solid fa-power-off"></i>
                                                 <span>Đăng xuất</span>
                                             </a>
@@ -206,72 +208,82 @@
 
             <!-- Page content -->
             <div class="container-fluid">
-                <!-- <div class="row mt-4">
-                    <div class="col-md-12">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb ms-4">
-                                <li class="breadcrumb-item"><a href="../index.html" class="text-decoration-none fs-5">Trang chủ</a></li>
-                                <li class="breadcrumb-item"><a href="./add.html" class="text-decoration-none fs-5">Khách hàng</a></li>
-                                <li class="breadcrumb-item active fs-5" aria-current="page">Thêm tài khoản</li>
-                            </ol>
-                        </nav>
-                    </div>
-                </div> -->
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="page-content bg-white rounded-3">
-                            <form class="p-4">
-                                <div class="form-group-flex">
-                                    <div class="form-group">
-                                        <label for="fullname" class="form-label">Họ tên</label>
-                                        <input type="text" class="form-control" id="fullname" placeholder="VD: Nguyễn Văn A">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="email" placeholder="VD: example@gmail.com">
-                                    </div>
-                                </div>
+                        <div class="page-content">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-6 col-12 mt-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                          <div class="card-body-left">
+                                            <span class="card-icon bg-danger bg-opacity-10">
+                                                <i class="fa-solid fa-sack-dollar text-danger"></i>
+                                            </span>
+                                            <p class="card-text">Doanh thu tháng</p>
+                                          </div>
 
-                                <div class="form-group-flex">
-                                    <div class="form-group">
-                                        <label for="account" class="form-label">Tên tài khoản</label>
-                                        <input type="text" class="form-control" id="account" name="fullname" placeholder="VD: abc123">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password" class="form-label">Mật khẩu</label>
-                                        <input type="password" class="form-control" id="password" name="password" placeholder="******">
-                                    </div>
-                                </div>
-
-                                <div class="form-group-flex">
-                                    <div class="form-group">
-                                        <label for="phone" class="form-label">Số điện thoại</label>
-                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="VD: 0123456789">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="address" class="form-label">Địa chỉ</label>
-                                        <textarea class="form-control" name="address" id="address" name="address" cols="30" rows="1"></textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group-flex align-items-start">
-                                    <div class="form-group">
-                                        <label for="phone" class="form-label">Level</label>
-                                        <select class="form-select" name="level" aria-label="Default select example">
-                                            <option value="0">0 - Admin</option>
-                                            <option value="1">1 - User</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="avatar" class="form-label">Avatar</label>
-                                        <input type="file" class="form-control" id="avatar" name="avatar">
-                                        <p class="form-text">Allowed JPG, JPEG or PNG. Max size of 800K</p>
-                                        <div class="grid-img">
-                                            <img src="" alt="upload-hinh-anh-san-pham">
+                                          <div class="card-body-right">
+                                            <p class="card-total">50.000.000 </br> VND</p>
+                                            <p class="text-success"><i class="fa-solid fa-arrow-trend-up"></i> +10.8%</p>
+                                          </div>
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" name="submit" value="submit" class="btn-submit-form">Xác nhận</button>
-                            </form>
+
+                                <div class="col-lg-3 col-md-6 col-12 mt-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                          <div class="card-body-left">
+                                            <span class="card-icon bg-success bg-opacity-10">
+                                                <i class="fa-solid fa-coins text-success"></i>
+                                            </span>
+                                            <p class="card-text">Doanh thu ngày</p>
+                                          </div>
+
+                                          <div class="card-body-right">
+                                            <p class="card-total">1.150.000 </br> VND</p>
+                                            <p class="text-danger"><i class="fa-solid fa-arrow-trend-down"></i> -5.8%</p>
+                                          </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3 col-md-6 col-12 mt-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                          <div class="card-body-left">
+                                            <span class="card-icon bg-info bg-opacity-10">
+                                                <i class="fa-solid fa-bag-shopping text-info"></i>
+                                            </span>
+                                            <p class="card-text">Tổng đơn hàng</p>
+                                          </div>
+
+                                          <div class="card-body-right">
+                                            <p class="card-total">200 </br> ĐƠN</p>
+                                            <p class="text-success"><i class="fa-solid fa-arrow-trend-up"></i> +10.8%</p>
+                                          </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3 col-md-6 col-12 mt-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                          <div class="card-body-left">
+                                            <span class="card-icon bg-warning bg-opacity-10">
+                                                <i class="fa-solid fa-burger text-warning"></i>
+                                            </span>
+                                            <p class="card-text">Tổng sản phẩm</p>
+                                          </div>
+
+                                          <div class="card-body-right">
+                                            <p class="card-total">1000 </br> SP</p>
+                                            <p class="text-danger"><i class="fa-solid fa-arrow-trend-down"></i> -12.8%</p>
+                                          </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -285,14 +297,7 @@
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 
-    <script src="../assets/js/main.js"></script>
-
-    <script>
-        const inputFile = document.querySelector('input[name="avatar"]');
-        const gridImg = document.querySelector('.grid-img');
-
-        uploadFile(inputFile, gridImg);
-    </script>
+    <script src="./assets/js/main.js"></script>
 
 </body>
 </html>

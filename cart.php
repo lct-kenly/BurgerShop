@@ -1,3 +1,65 @@
+<?php
+    $conn = mysqli_connect('localhost', 'root', '', 'burger-shop') or die('Couldn\'t connect to Database');
+
+    $error = array();
+    session_start();
+    $sanpham_giohang = array();
+    $sum = 0;
+    $count = 0;
+
+    if(isset($_SESSION['user_logged'])) {
+        $user = $_SESSION['user_logged'];
+
+        include('./libs/helper.php');
+
+        $countID_cart = get_count_cart($conn, $user['id']) ?? 0;
+
+        $sql = "SELECT san_pham.id, san_pham.ten_san_pham, san_pham.hinh_anh, san_pham.don_gia_ban, gio_hang.so_luong, SUM(gio_hang.so_luong * san_pham.don_gia_ban) AS tri_gia 
+                FROM gio_hang, san_pham 
+                WHERE gio_hang.id_san_pham = san_pham.id AND gio_hang.id_khach_hang = {$user['id']}
+                GROUP BY san_pham.id";
+        
+        $query = mysqli_query($conn, $sql);
+        while($row = mysqli_fetch_assoc($query)) {
+            $sanpham_giohang[] = $row;
+            $sum += $row['tri_gia'];
+        }
+
+        $count = count($sanpham_giohang);
+
+        // Cập nhật giỏ hàng
+        if(isset($_POST['submit']) && $_POST['submit'] == 'submit') {
+            $id = isset($_POST['id_san_pham']) ? $_POST['id_san_pham'] : array();
+            $soluong = isset($_POST['so_luong']) ? $_POST['so_luong'] : array();
+
+            if(empty($soluong)) {
+                $error['soluong'] = 'Lỗi, mảng rỗng';
+            }
+
+            if(empty($id)) {
+                $error['id'] = 'Lỗi, mảng rỗng';
+            }
+
+            if(!($error)) {
+                for($i = 0; $i < count($id); $i++) {
+                    if($soluong[$i] < 0) $soluong[$i] = 1;
+
+                    $sql = "UPDATE `gio_hang` SET `so_luong`='{$soluong[$i]}' WHERE `id_khach_hang`={$user['id']} AND `id_san_pham`={$id[$i]}";
+                    $query = mysqli_query($conn, $sql);
+
+                }
+
+                if($query) {
+                    echo "<script>
+                            alert('Cập nhật giỏ hàng thành công!');
+                            window.location.href = 'cart.php';
+                        </script>";
+                }
+            }
+        }
+    }
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -42,7 +104,7 @@
     <header class="header_section">
       <div class="container">
         <nav class="navbar navbar-expand-lg custom_nav-container ">
-          <a class="navbar-brand" href="index.html">
+          <a class="navbar-brand" href="index.php">
             <span>
               Feane
             </span>
@@ -55,22 +117,25 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav  mx-auto ">
               <li class="nav-item">
-                <a class="nav-link" href="index.html">Home </a>
+                <a class="nav-link" href="index.php">Home </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="menu.html">Menu</a>
+                <a class="nav-link" href="menu.php">Menu</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="about.html">About</a>
+                <a class="nav-link" href="about.php">About</a>
               </li>
               <li class="nav-item active">
-                <a class="nav-link" href="book.html">Book Table <span class="sr-only">(current)</span> </a>
+                <a class="nav-link" href="about.php">Cart</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="book.php">Book Table <span class="sr-only">(current)</span> </a>
               </li>
             </ul>
             <div class="user_option">
               <a class="cart_link" href="#">
                 <i class="fa-solid fa-cart-shopping"></i>
-                <span>3</span>
+                <span><?php echo $countID_cart ?? 0;?></span>
               </a>
 
               <div class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
@@ -89,9 +154,36 @@
                 </form>
               </div>
               
-              <a href="account.html" class="user_link">
-                <i class="fa fa-user mr-2" aria-hidden="true"></i>
-                Đăng nhập
+              <?php if(isset($user)) { ?>
+                <div class="grid-logged">
+                  <button class="user_logged btn-show-nav-sub" type="button">
+                      <img src="<?php echo !empty($user['avatar']) ? './storage/uploads/'.$user['avatar'] : './images/avatar-.jpg'?>" alt="">
+                      <span><?=$user['ten_tai_khoan']?></span>
+                    </button>
+                    <ul class="nav-sub-logged">
+                        <li>
+                          <img src="<?php echo !empty($user['avatar']) ? './storage/uploads/'.$user['avatar'] : './images/avatar-.jpg'?>" alt="">
+                          <span><?=$user['ten_tai_khoan']?></span>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                          <a href="./profile.php"><i class="fa-regular fa-user"></i> Thông tin tài khoản</a>
+                        </li>
+                        <li>
+                          <a href="./order.php"><i class="fa-solid fa-list-check"></i> Đơn hàng của bạn</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                          <a href="./logout.php"><i class="fa-solid fa-power-off"></i> Đăng xuất</a>
+                        </li>
+                    </ul>
+                </div>
+              <?php } else { ?>
+                <a href="account.php" class="user_link">
+                  <i class="fa fa-user mr-2" aria-hidden="true"></i>
+                  Đăng nhập
+                </a>
+              <?php } ?>
               </a>
             </div>
           </div>
@@ -123,42 +215,27 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td class="text-center"><img src="./images/f1.png" alt="" style="width: 60px; height: 60px"></td>
-                    <td class="text-center vertical-center">Delicious Pizza</td>
-                    <td class="text-center vertical-center">$20</td>
-                    <td class="text-center vertical-center">
-                        <input class="p-2" type="number" value="1" style="max-width: 50%">
-                    </td>
-                    <td class="text-center vertical-center">$0</td>
-                    <td class="text-center vertical-center"><a href=""><i class="fa-solid fa-x"></i></a></td>
-                  </tr>
-
-                  <tr>
-                    <td class="text-center"><img src="./images/f1.png" alt="" style="width: 60px; height: 60px"></td>
-                    <td class="text-center vertical-center">Delicious Pizza</td>
-                    <td class="text-center vertical-center">$20</td>
-                    <td class="text-center vertical-center">
-                        <input class="p-2" type="number" value="1" style="max-width: 50%">
-                    </td>
-                    <td class="text-center vertical-center">$0</td>
-                    <td class="text-center vertical-center"><a href=""><i class="fa-solid fa-x"></i></a></td>
-                  </tr>
-
-                  <tr>
-                    <td class="text-center"><img src="./images/f1.png" alt="" style="width: 60px; height: 60px"></td>
-                    <td class="text-center vertical-center">Delicious Pizza</td>
-                    <td class="text-center vertical-center">$20</td>
-                    <td class="text-center vertical-center">
-                        <input class="p-2" type="number" value="1" style="max-width: 50%">
-                    </td>
-                    <td class="text-center vertical-center">$0</td>
-                    <td class="text-center vertical-center"><a href=""><i class="fa-solid fa-x"></i></a></td>
-                  </tr>
+                  <?php foreach ($sanpham_giohang as $item) {?>
+                    <tr>
+                      <td class="text-center"><img src="./storage/uploads/<?=$item['hinh_anh']?>" alt="" style="width: 60px; height: 60px"></td>
+                      <td class="text-center vertical-center"><?=$item['ten_san_pham']?></td>
+                      <td class="text-center vertical-center">$<?=$item['don_gia_ban']?></td>
+                      <td class="text-center vertical-center">
+                          <input class="p-2" type="number" name="so_luong[]" form="form-update-cart" value="<?=$item['so_luong']?>" style="max-width: 50%">
+                          <input type="hidden" name="id_san_pham[]" form="form-update-cart" value="<?=$item['id']?>" />
+                      </td>
+                      <td class="text-center vertical-center">$<?=$item['tri_gia']?></td>
+                      <td class="text-center vertical-center">
+                        <a href="./delete-cart.php?id=<?=$item['id']?>">
+                          <i class="fa-solid fa-x"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  <?php } ?>
                 </tbody>
             </table>
-
-            <a href="" class="btn btn-primary py-2 px-5">Update Cart</a>
+            <button type="submit" name="submit" value="submit" form="form-update-cart" class="btn btn-primary py-2 px-5">Update Cart</button>
+            <form id="form-update-cart" method="POST" action=""></form>
         </div>
         <div class="col-md-4">
             <table class="table table-bordered">
@@ -171,7 +248,7 @@
                 <tbody>
                   <tr>
                     <td class="text-center">Subtotal:</td>
-                    <td class="text-center">$500</td>
+                    <td class="text-center">$<?=$sum?></td>
                   </tr>
                   <tr>
                     <td class="text-center">Shipping:</td>
@@ -179,11 +256,11 @@
                   </tr>
                   <tr>
                     <td class="text-center">Total:</td>
-                    <td class="text-center">$545</td>
+                    <td class="text-center">$<?=$sum + 45?></td>
                   </tr>
                 </tbody>
               </table>
-              <a href="" class="btn btn-primary w-100 py-2">Proceed To Checkout</a>
+              <a href="./checkout.php" class="btn btn-primary w-100 py-2">Proceed To Checkout</a>
         </div>
       </div>
     </div>

@@ -1,3 +1,20 @@
+<?php 
+    $conn = mysqli_connect('localhost', 'root', '', 'burger-shop') or die('Couldn\'t connect to Database');
+
+    session_start();
+
+    if(!isset($_SESSION['admin_logged'])) {
+        header('location: ../../login.php');
+    }
+
+    $sql = "SELECT * FROM san_pham";
+    $query = mysqli_query($conn, $sql);
+    $products = array();
+
+    while ($row = mysqli_fetch_assoc($query)) {
+        $products[] = $row;
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +30,6 @@
 
     <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
-
 
     <!-- Base CSS -->
     <link rel="stylesheet" href="../assets/css/base.css">
@@ -35,7 +51,7 @@
 
             <!-- Logo brand -->
             <div class="app-brand">
-                <a href="../index.html" class="">
+                <a href="../index.php" class="">
                     <h5>APP BRAND</h5>
                 </a>
             </div>
@@ -44,7 +60,7 @@
             
             <ul class="menu-inner">
                 <li class="menu-item">
-                    <a href="../index.html" class="menu-link">
+                    <a href="../index.php" class="menu-link">
                         <i class="fa-solid fa-house menu-icon"></i>                        
                         <span>Trang chủ</span>              
                     </a>
@@ -56,21 +72,21 @@
                     <span>Users</span>
                 </li>
 
-                <li class="menu-item active">
-                    <a href="" class="menu-link menu-toggle active">
+                <li class="menu-item">
+                    <a href="" class="menu-link menu-toggle">
                         <i class="fa-solid fa-user menu-icon"></i>                       
                         <span>Khách hàng</span>              
                     </a>
 
-                    <ul class="menu-sub open">
+                    <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="./list.html" class="menu-link active">
+                            <a href="../users/list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="./add.html" class="menu-link">
+                            <a href="../users/add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -84,21 +100,21 @@
                     <span>Products</span>
                 </li>
 
-                <li class="menu-item">
-                    <a href="" class="menu-link menu-toggle">
+                <li class="menu-item active">
+                    <a href="" class="menu-link menu-toggle active">
                         <i class="fa-solid fa-burger menu-icon"></i>                      
                         <span>Sản phẩm</span>              
                     </a>
 
-                    <ul class="menu-sub">
+                    <ul class="menu-sub open">
                         <li class="menu-item">
-                            <a href="../products/list.html" class="menu-link">
+                            <a href="./list.php" class="menu-link active">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="../products/add.html" class="menu-link">
+                            <a href="./add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -119,13 +135,13 @@
 
                     <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="../orders/list.html" class="menu-link">
+                            <a href="../orders/list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="../orders/add.html" class="menu-link">
+                            <a href="../orders/add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -169,7 +185,7 @@
                                         <li class="divider"></li>
 
                                         <li class="dropdown-item">
-                                            <a href="../my-profile.html" class="dropdown-link">
+                                            <a href="../my-profile.php" class="dropdown-link">
                                                 <i class="fa-regular fa-address-card"></i>
                                                 <span>Thông tin tài khoản</span>
                                             </a>
@@ -193,7 +209,7 @@
                                         <li class="divider"></li>
 
                                         <li class="dropdown-item">
-                                            <a href="" class="dropdown-link">
+                                            <a href="../../logout.php" class="dropdown-link">
                                                 <i class="fa-solid fa-power-off"></i>
                                                 <span>Đăng xuất</span>
                                             </a>
@@ -213,8 +229,8 @@
                     <div class="col-md-12">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb ms-4">
-                                <li class="breadcrumb-item"><a href="../index.html" class="text-decoration-none fs-5">Trang chủ</a></li>
-                                <li class="breadcrumb-item"><a href="./add.html" class="text-decoration-none fs-5">Khách hàng</a></li>
+                                <li class="breadcrumb-item"><a href="../index.php" class="text-decoration-none fs-5">Trang chủ</a></li>
+                                <li class="breadcrumb-item"><a href="./add.php" class="text-decoration-none fs-5">Khách hàng</a></li>
                                 <li class="breadcrumb-item active fs-5" aria-current="page">Thêm tài khoản</li>
                             </ol>
                         </nav>
@@ -223,49 +239,35 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="page-content bg-white rounded-3 p-4">
-                            <table class="table table-bordered display mt-3" id="table-list-users">
+                            <table class="table table-bordered display mt-3" id="table-list-products">
                                 <thead>
                                   <tr>
                                     <th scope="col">ID</th>
-                                    <th scope="col">Họ tên</th>
-                                    <th scope="col">Tên tài khoản</th>
+                                    <th scope="col">Tên sản phẩm</th>
+                                    <th scope="col">Đơn giá nhập</th>
+                                    <th scope="col">Đơn giá bán</th>
+                                    <th scope="col">Thời gian nhập</th>
+                                    <th scope="col">Thời gian cập nhật </th>
                                     <th scope="col">Hành động</th>
                                   </tr>
                                 </thead>
                                 <tbody>
+                                <?php foreach ($products as $item) {?>
                                   <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
+                                    <td><?=$item['id']?></td>
+                                    <td><?=$item['ten_san_pham']?></td>
+                                    <td><?=$item['don_gia_nhap']?></td>
+                                    <td><?=$item['don_gia_ban']?></td>
+                                    <td><?=$item['created_at']?></td>
+                                    <td><?=$item['updated_at']?></td>
                                     <td>
-                                        <a href="./edit.html" class="btn btn-sm btn-outline-info"><i class="fa-regular fa-pen-to-square"></i></a>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="id-test">
-                                            <i class="fa-regular fa-trash-can"></i>
-                                        </button>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">2</th>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>
-                                        <a href="./edit.html" class="btn btn-sm btn-outline-info"><i class="fa-regular fa-pen-to-square"></i></a>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="id-test">
-                                            <i class="fa-regular fa-trash-can"></i>
-                                        </button>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">3</th>
-                                    <td>Larry the Bird</td>
-                                    <td>@twitter</td>
-                                    <td>
-                                        <a href="./edit.html" class="btn btn-sm btn-outline-info"><i class="fa-regular fa-pen-to-square"></i></a>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="id-test">
+                                        <a href="./edit.php?id=<?=$item['id']?>" class="btn btn-sm btn-outline-info"><i class="fa-regular fa-pen-to-square"></i></a>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="<?=$item['id']?>">
                                             <i class="fa-regular fa-trash-can"></i>
                                         </button>
                                     </td> 
                                   </tr>
+                                <?php } ?>
                                 </tbody>
                               </table>
                         </div>
@@ -280,14 +282,14 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Xóa tài khoản</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Xóa tài sản phẩm</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     Bạn chắc chắn muốn xóa vĩnh viễn tài khoản này?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger btn-delete-user">Xóa</button>
+                    <a class="btn btn-danger btn-delete-product">Xóa</a>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
@@ -305,25 +307,27 @@
 
     <script src="../assets/js/main.js"></script>
 
+
     <script>
         $(document).ready( function () {
-            $('#table-list-users').DataTable();
+            $('#table-list-products').DataTable();
         } );
 
 
         document.addEventListener("DOMContentLoaded", function() {
             let id;
 
-            const btnDelete = document.querySelector('.btn-delete-user');
+            const btnDelete = document.querySelector('.btn-delete-product');
             const exampleModal = document.getElementById('exampleModal')
             exampleModal.addEventListener('show.bs.modal', event => {
                 const button = event.relatedTarget;
                 
                 id = button.getAttribute('data-id');
 
-                btnDelete.setAttribute('href', id);
+                btnDelete.setAttribute('href', `./delete.php?id=${id}`);
             });
         })
+
     </script>
 </body>
 </html>

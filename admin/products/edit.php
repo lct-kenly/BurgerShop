@@ -1,3 +1,96 @@
+<?php 
+    $conn = mysqli_connect('localhost', 'root', '', 'burger-shop') or die('Couldn\'t connect to Database');
+
+    session_start();
+    date_default_timezone_set('Asia/Ho_Chi_Minh'); 
+    $date_current = '';
+    $date_current = date("Y-m-d H:i:s");
+
+    if(!isset($_SESSION['admin_logged'])) {
+        header('location: ../../account.php');
+    }
+
+    $id_san_pham = isset($_GET['id']) ? $_GET['id'] : '';
+
+    if(!(empty($id_san_pham))) {
+        $error = array();
+
+        // Lấy dữ diệu bảng loại hàng tạo select html
+        $sql = "SELECT * FROM loai_hang";
+        $query = mysqli_query($conn, $sql);
+
+        while ($row = mysqli_fetch_assoc($query)) {
+            $loaihang[] = $row;
+        }
+
+        // Lấy dữ liệu sản phẩm cần cập nhật thông qua id
+        $sql = "SELECT * FROM san_pham WHERE id = {$id_san_pham}";
+        $query = mysqli_query($conn, $sql);
+
+        if(mysqli_num_rows($query) > 0) {
+            $sanpham = mysqli_fetch_assoc($query);
+        }
+
+        if(isset($_POST['submit']) && $_POST['submit'] == 'submit') {
+            $ten_san_pham = isset($_POST['ten_san_pham']) ? addslashes($_POST['ten_san_pham']) : '';
+            $mo_ta = isset($_POST['mo_ta']) ? addslashes($_POST['mo_ta']) : '';
+            $don_gia_nhap = isset($_POST['don_gia_nhap']) ? addslashes($_POST['don_gia_nhap']) : '';
+            $don_gia_ban = isset($_POST['don_gia_ban']) ? addslashes($_POST['don_gia_ban']) : '';
+            $so_luong = isset($_POST['so_luong']) ? addslashes($_POST['so_luong']) : '';
+            $ngay_nhap = isset($_POST['ngay_nhap']) ? date_format(date_create($_POST['ngay_nhap']), 'Y-m-d H:i:s') : $date_current;
+            $id_loai = isset($_POST['id_loai']) ? addslashes($_POST['id_loai']) : '';
+            $hinh_anh = $_FILES["hinh_anh"]["name"];
+            $tempname = $_FILES["hinh_anh"]["tmp_name"];
+            $folder = "../../storage/uploads/" . $hinh_anh;
+
+            if(empty($ten_san_pham)) {
+                $error['ten_san_pham'] = 'Bạn chưa nhập tên sản phẩm';
+            }
+
+            if(empty($don_gia_nhap)) {
+                $error['don_gia_nhap'] = 'Bạn chưa nhập đơn giá nhập';
+            }
+
+            if(empty($don_gia_ban)) {
+                $error['don_gia_ban'] = 'Bạn chưa nhập đơn giá bán';
+            }
+
+            if(empty($so_luong)) {
+                $error['so_luong'] = 'Bạn chưa nhập số lượng kho';
+            }
+
+            if(empty($mo_ta)) {
+                $error['mo_ta'] = 'Bạn chưa nhập mô tả sản phẩm';
+            }
+
+            if(empty($id_loai)) {
+                $error['id_loai'] = 'Bạn chưa chọn id loại hàng';
+            }
+
+            if(empty($hinh_anh)) {
+                $hinh_anh = $sanpham['hinh_anh'];
+            } else {
+                move_uploaded_file($tempname ,$folder);
+            }
+
+            if(!($error)) {
+                $sql = "UPDATE `san_pham` SET `ten_san_pham`='{$ten_san_pham}',`don_gia_nhap`='{$don_gia_nhap}',`don_gia_ban`='{$don_gia_ban}',`so_luong`='{$so_luong}',`mo_ta`='{$mo_ta}',`hinh_anh`='{$hinh_anh}',`id_loai_hang`='{$id_loai}',`created_at`='{$ngay_nhap}',`updated_at`='{$date_current}' WHERE id={$id_san_pham}";
+
+                if(mysqli_query($conn, $sql)) {
+                    echo "<script>
+                            alert('Cập nhật sản phẩm thành công!');
+                            window.location.href = './list.php';
+                        </script>";
+                } else {
+                    echo "<script>
+                            alert('Có lỗi trong quá trình xử lý, Vui lòng thử lại!');
+                        </script>";
+                }
+            }
+        }
+    }
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,7 +125,7 @@
 
             <!-- Logo brand -->
             <div class="app-brand">
-                <a href="../index.html" class="">
+                <a href="../index.php" class="">
                     <h5>APP BRAND</h5>
                 </a>
             </div>
@@ -41,7 +134,7 @@
             
             <ul class="menu-inner">
                 <li class="menu-item">
-                    <a href="../index.html" class="menu-link">
+                    <a href="../index.php" class="menu-link">
                         <i class="fa-solid fa-house menu-icon"></i>                        
                         <span>Trang chủ</span>              
                     </a>
@@ -61,13 +154,13 @@
 
                     <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="../users/list.html" class="menu-link">
+                            <a href="../users/list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="../users/add.html" class="menu-link">
+                            <a href="../users/add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -89,13 +182,13 @@
 
                     <ul class="menu-sub open">
                         <li class="menu-item">
-                            <a href="./list.html" class="menu-link">
+                            <a href="./list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="./add.html" class="menu-link active">
+                            <a href="./add.php" class="menu-link active">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -116,13 +209,13 @@
 
                     <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="../orders/list.html" class="menu-link">
+                            <a href="../orders/list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="../orders/add.html" class="menu-link">
+                            <a href="../orders/add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -166,7 +259,7 @@
                                         <li class="divider"></li>
 
                                         <li class="dropdown-item">
-                                            <a href="../my-profile.html" class="dropdown-link">
+                                            <a href="../my-profile.php" class="dropdown-link">
                                                 <i class="fa-regular fa-address-card"></i>
                                                 <span>Thông tin tài khoản</span>
                                             </a>
@@ -190,7 +283,7 @@
                                         <li class="divider"></li>
 
                                         <li class="dropdown-item">
-                                            <a href="" class="dropdown-link">
+                                            <a href="../../logout.php" class="dropdown-link">
                                                 <i class="fa-solid fa-power-off"></i>
                                                 <span>Đăng xuất</span>
                                             </a>
@@ -210,8 +303,8 @@
                     <div class="col-md-12">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb ms-4">
-                                <li class="breadcrumb-item"><a href="../index.html" class="text-decoration-none fs-5">Trang chủ</a></li>
-                                <li class="breadcrumb-item"><a href="./add.html" class="text-decoration-none fs-5">Khách hàng</a></li>
+                                <li class="breadcrumb-item"><a href="../index.php" class="text-decoration-none fs-5">Trang chủ</a></li>
+                                <li class="breadcrumb-item"><a href="./add.php" class="text-decoration-none fs-5">Khách hàng</a></li>
                                 <li class="breadcrumb-item active fs-5" aria-current="page">Thêm tài khoản</li>
                             </ol>
                         </nav>
@@ -220,26 +313,42 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="page-content bg-white rounded-3">
-                            <form class="p-4">
+                            <form class="p-4" method="POST" action="edit.php?id=<?=$id_san_pham?>" enctype="multipart/form-data">
                                 <div class="form-group-flex">
                                     <div class="form-group">
-                                        <label for="name" class="form-label">Tên sản phẩm</label>
-                                        <input type="text" class="form-control" id="name" placeholder="VD: Burger">
+                                        <label for="ten_san_pham" class="form-label">Tên sản phẩm</label>
+                                        <input type="text" class="form-control" id="ten_san_pham" name="ten_san_pham" placeholder="VD: Đồng hồ BABY-G 38.1 mm Nữ MSG-S200-4ADR" value="<?php echo isset($sanpham['ten_san_pham']) ? $sanpham['ten_san_pham'] : ''; ?>">
+                                        <span class="form-text ms-3 text-danger"><?php echo !(empty($error['ten_san_pham'])) ? $error['ten_san_pham'] : ''; ?></span>
                                     </div>
                                     <div class="form-group">
-                                        <label for="price" class="form-label">Đơn giá</label>
-                                        <input type="number" class="form-control" id="price" placeholder="VD: 20.000">
+                                        <label for="mo_ta" class="form-label">Mô tả</label>
+                                        <textarea class="form-control" name="mo_ta" id="mo_ta" cols="30" rows="1"><?php echo isset($sanpham['mo_ta']) ? $sanpham['mo_ta'] : ''; ?></textarea>
+                                        <span class="form-text ms-3 text-danger"><?php echo !(empty($error['mo_ta'])) ? $error['mo_ta'] : ''; ?></span>
                                     </div>
                                 </div>
 
                                 <div class="form-group-flex">
                                     <div class="form-group">
-                                        <label for="quantity" class="form-label">Số lượng</label>
-                                        <input type="number" class="form-control" id="quantity" name="fullname" placeholder="VD: 10">
+                                        <label for="don_gia_nhap" class="form-label">Đơn giá nhập</label>
+                                        <input type="number" class="form-control" id="don_gia_nhap" name="don_gia_nhap" placeholder="VD: 2.000.000" value="<?php echo isset($sanpham['don_gia_nhap']) ? $sanpham['don_gia_nhap'] : ''; ?>">
+                                        <span class="form-text ms-3 text-danger"><?php echo !(empty($error['don_gia_nhap'])) ? $error['don_gia_nhap'] : ''; ?></span>
                                     </div>
                                     <div class="form-group">
-                                        <label for="Date" class="form-label">Ngày</label>
-                                        <input type="Date" class="form-control" id="Date" name="Date" placeholder="16/01/2023">
+                                        <label for="don_gia_ban" class="form-label">Đơn giá bán</label>
+                                        <input type="number" class="form-control" id="don_gia_ban" name="don_gia_ban" placeholder="VD: 2.450.000"value="<?php echo isset($sanpham['don_gia_ban']) ? $sanpham['don_gia_ban'] : ''; ?>">
+                                        <span class="form-text ms-3 text-danger"><?php echo !(empty($error['don_gia_ban'])) ? $error['don_gia_ban'] : ''; ?></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group-flex align-items-start">
+                                    <div class="form-group">
+                                        <label for="so_luong" class="form-label">Số lượng kho</label>
+                                        <input type="number" class="form-control" id="so_luong" name="so_luong" placeholder="VD: 10" value="<?php echo isset($sanpham['so_luong']) ? $sanpham['so_luong'] : ''; ?>">
+                                        <span class="form-text ms-3 text-danger"><?php echo !(empty($error['so_luong'])) ? $error['so_luong'] : ''; ?></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ngay_nhap" class="form-label">Ngày nhập</label>
+                                        <input type="datetime-local" class="form-control" id="ngay_nhap" name="ngay_nhap" value="<?php echo isset($sanpham['created_at']) ? $sanpham['created_at'] : ''; ?>">
                                     </div>
                                 </div>
 
@@ -247,16 +356,20 @@
                                     <div class="form-group">
                                         <label for="id_loai" class="form-label">ID loại hàng</label>
                                         <select class="form-select" name="id_loai" aria-label="Default select example">
-                                            <option value="0">0 - Burger</option>
-                                            <option value="1">1 - Pasta</option>
+                                            <?php foreach ($loaihang as $item) { ?>
+                                                <option value="<?=$item['id']?>" <?php if($item['id'] == $sanpham['id_loai_hang']) echo "selected"; ?> >
+                                                    <?=$item['id'] . " - " . $item['ten_loai']?> 
+                                                </option>
+                                            <?php } ?>
                                           </select>
+                                          <span class="form-text ms-3 text-danger"><?php echo !(empty($error['id_loai'])) ? $error['id_loai'] : ''; ?></span>
                                     </div>
                                     <div class="form-group">
-                                        <label for="thumbnail" class="form-label">Hình ảnh</label>
-                                        <input type="file" class="form-control" id="thumbnail" name="thumbnail" accept=".jpg, .png, .jpeg">
+                                        <label for="hinh_anh" class="form-label">Hình ảnh</label>
+                                        <input type="file" class="form-control" id="hinh_anh" name="hinh_anh" accept=".jpg, .png, .jpeg" multiple>
                                         <p class="form-text">Allowed JPG, JPEG or PNG. Max size of 800K</p>
                                         <div class="grid-img">
-                                            <img src="" alt="upload-hinh-anh-san-pham">
+                                            <img src="../../storage/uploads/<?php echo isset($sanpham['hinh_anh']) ? $sanpham['hinh_anh'] : ''; ?>" alt="upload-hinh-anh-san-pham">
                                         </div>
                                     </div>
                                 </div>
@@ -278,7 +391,7 @@
     <script src="../assets/js/main.js"></script>
 
     <script>
-        const inputFile = document.querySelector('input[name="thumbnail"]');
+        const inputFile = document.querySelector('input[name="hinh_anh"]');
         const gridImg = document.querySelector('.grid-img');
 
         uploadFile(inputFile, gridImg);

@@ -1,3 +1,57 @@
+<?php 
+    $conn = mysqli_connect('localhost', 'root', '', 'burger-shop') or die('Couldn\'t connect to Database');
+
+    session_start();
+
+    if(!isset($_SESSION['admin_logged'])) {
+        header('location: ../../account.php');
+    }
+
+    $ma_don_hang = isset($_GET['id']) ? $_GET['id'] : '';
+ 
+    if(!(empty($ma_don_hang))) {
+        $san_pham_don_hang = array();
+        $don_hang = array();
+        $sum = 0;
+
+        // select danh sách sản phẩm trong đơn hàng
+        $sql = "SELECT san_pham.id, san_pham.ten_san_pham, chi_tiet_don_hang.so_luong, chi_tiet_don_hang.don_gia, chi_tiet_don_hang.tri_gia
+                FROM san_pham, chi_tiet_don_hang
+                WHERE san_pham.id = chi_tiet_don_hang.id_san_pham AND chi_tiet_don_hang.ma_don_hang = {$ma_don_hang}";
+        $query = mysqli_query($conn, $sql);
+
+        while ($row = mysqli_fetch_assoc($query)) {
+            $san_pham_don_hang[] = $row;
+            $sum += $row['tri_gia'];
+        }
+
+        // select thông tin khách hàng
+        $sql = "SELECT khach_hang.ho_ten, khach_hang.email, khach_hang.so_dien_thoai, don_hang.ma_don_hang, don_hang.created_at, don_hang.trang_thai, don_hang.thanh_toan, don_hang.id_khach_hang
+                FROM khach_hang, don_hang
+                WHERE khach_hang.id = don_hang.id_khach_hang";
+        $query = mysqli_query($conn, $sql);
+        if(mysqli_num_rows($query) > 0) {
+            $don_hang = mysqli_fetch_assoc($query);
+        }
+
+        if(isset($_GET['state']) && $_GET['state'] == 'update') {
+            $sql = "UPDATE don_hang SET trang_thai=1 WHERE ma_don_hang={$ma_don_hang} AND id_khach_hang={$don_hang['id_khach_hang']}";
+            $query = mysqli_query($conn, $sql);
+            if($query) {
+                echo "<script>
+                            alert('Cập nhật trạng thái đơn hàng thành công!');
+                            window.location.href = 'list.php';
+                        </script>";
+            } else {
+                echo "<script>
+                            alert('Có lỗi trong quá trình xử lý, vui lòng thử lại!');
+                            window.location.href = 'list.php';
+                        </script>";
+            }
+        } 
+
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,8 +65,6 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
 
     <!-- Base CSS -->
     <link rel="stylesheet" href="../assets/css/base.css">
@@ -34,7 +86,7 @@
 
             <!-- Logo brand -->
             <div class="app-brand">
-                <a href="../index.html" class="">
+                <a href="../index.php" class="">
                     <h5>APP BRAND</h5>
                 </a>
             </div>
@@ -43,7 +95,7 @@
             
             <ul class="menu-inner">
                 <li class="menu-item">
-                    <a href="../index.html" class="menu-link">
+                    <a href="../index.php" class="menu-link">
                         <i class="fa-solid fa-house menu-icon"></i>                        
                         <span>Trang chủ</span>              
                     </a>
@@ -63,13 +115,13 @@
 
                     <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="../users/list.html" class="menu-link">
+                            <a href="./list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="../users/add.html" class="menu-link">
+                            <a href="./add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -83,21 +135,21 @@
                     <span>Products</span>
                 </li>
 
-                <li class="menu-item active">
-                    <a href="" class="menu-link menu-toggle active">
+                <li class="menu-item">
+                    <a href="" class="menu-link menu-toggle">
                         <i class="fa-solid fa-burger menu-icon"></i>                      
                         <span>Sản phẩm</span>              
                     </a>
 
-                    <ul class="menu-sub open">
+                    <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="./list.html" class="menu-link active">
+                            <a href="../products/list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="./add.html" class="menu-link">
+                            <a href="../products/add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -110,21 +162,21 @@
                     <span>orders</span>
                 </li>
 
-                <li class="menu-item">
-                    <a href="" class="menu-link menu-toggle">
+                <li class="menu-item active">
+                    <a href="" class="menu-link menu-toggle active">
                         <i class="fa-solid fa-list-check menu-icon"></i>                      
                         <span>Đơn hàng</span>              
                     </a>
 
-                    <ul class="menu-sub">
+                    <ul class="menu-sub open">
                         <li class="menu-item">
-                            <a href="../orders/list.html" class="menu-link">
+                            <a href="../orders/list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="../orders/add.html" class="menu-link">
+                            <a href="../orders/add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -168,7 +220,7 @@
                                         <li class="divider"></li>
 
                                         <li class="dropdown-item">
-                                            <a href="../my-profile.html" class="dropdown-link">
+                                            <a href="../my-profile.php" class="dropdown-link">
                                                 <i class="fa-regular fa-address-card"></i>
                                                 <span>Thông tin tài khoản</span>
                                             </a>
@@ -192,7 +244,7 @@
                                         <li class="divider"></li>
 
                                         <li class="dropdown-item">
-                                            <a href="" class="dropdown-link">
+                                            <a href="../../logout.php" class="dropdown-link">
                                                 <i class="fa-solid fa-power-off"></i>
                                                 <span>Đăng xuất</span>
                                             </a>
@@ -212,8 +264,8 @@
                     <div class="col-md-12">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb ms-4">
-                                <li class="breadcrumb-item"><a href="../index.html" class="text-decoration-none fs-5">Trang chủ</a></li>
-                                <li class="breadcrumb-item"><a href="./add.html" class="text-decoration-none fs-5">Khách hàng</a></li>
+                                <li class="breadcrumb-item"><a href="../index.php" class="text-decoration-none fs-5">Trang chủ</a></li>
+                                <li class="breadcrumb-item"><a href="./add.php" class="text-decoration-none fs-5">Khách hàng</a></li>
                                 <li class="breadcrumb-item active fs-5" aria-current="page">Thêm tài khoản</li>
                             </ol>
                         </nav>
@@ -222,72 +274,56 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="page-content bg-white rounded-3 p-4">
-                            <table class="table table-bordered display mt-3" id="table-list-products">
+                            <div class="">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <p class="w-50 fw-bold">Khách hàng: <?php echo $don_hang['ho_ten']?></p>
+                                    <p class="w-50 fw-bold">Mã đơn hàng: <?php echo $don_hang['ma_don_hang']?></p>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <p class="w-50 fw-bold">Ngày lập: <?php echo $don_hang['created_at']?></p>
+                                    <?php if($don_hang['trang_thai'] == 0) {?>
+                                        <p class="w-50 fw-bold">Trạng thái: <span class="text-danger">Đang xử lý</span></p>
+                                    <?php } else { ?>
+                                        <p class="w-50 fw-bold">Trạng thái: <span class="text-success">Đơn hàng đã giao thành công</span></p>
+                                    <?php } ?>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <p class="w-50 fw-bold">Hình thức thanh toán: <?php echo $don_hang['thanh_toan']?></p>
+                                </div>
+                            </div>
+                            <table class="table table-bordered">
                                 <thead>
-                                  <tr>
-                                    <th scope="col">ID</th>
-                                    <th scope="col">Tên sản phẩm</th>
-                                    <th scope="col">Đơn giá</th>
-                                    <th scope="col">Hành động</th>
-                                  </tr>
+                                    <tr>
+                                        <th scope="col">Mã sản phẩm</th>
+                                        <th scope="col">Tên sản phẩm</th>
+                                        <th scope="col">Số lượng</th>
+                                        <th scope="col">Đơn giá</th>
+                                        <th scope="col">Trị giá</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                  <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>
-                                        <a href="./edit.html" class="btn btn-sm btn-outline-info"><i class="fa-regular fa-pen-to-square"></i></a>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="id-test">
-                                            <i class="fa-regular fa-trash-can"></i>
-                                        </button>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">2</th>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>
-                                        <a href="./edit.html" class="btn btn-sm btn-outline-info"><i class="fa-regular fa-pen-to-square"></i></a>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="id-test">
-                                            <i class="fa-regular fa-trash-can"></i>
-                                        </button>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">3</th>
-                                    <td>Larry the Bird</td>
-                                    <td>@twitter</td>
-                                    <td>
-                                        <a href="./edit.html" class="btn btn-sm btn-outline-info"><i class="fa-regular fa-pen-to-square"></i></a>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="id-test">
-                                            <i class="fa-regular fa-trash-can"></i>
-                                        </button>
-                                    </td> 
-                                  </tr>
+                                    <?php foreach($san_pham_don_hang as $item) { ?>
+                                        <tr>
+                                            <td><?=$item['id']?></td>
+                                            <td><?=$item['ten_san_pham']?></td>
+                                            <td><?=$item['so_luong']?></td>
+                                            <td>$<?=$item['don_gia']?></td>
+                                            <td>$<?=$item['tri_gia']?></td>
+                                        </tr>
+                                    <?php } ?>
+                                    <tr>
+                                        <td colspan="5" class="text-center fw-bold">Tổng cộng: $<?=$sum?></td>
+                                    </tr>
                                 </tbody>
-                              </table>
+                            </table>
+
+                            <div>
+                                <a href="mailto:<?=$don_hang['email']?>" class="btn btn-outline-success me-2"><i class="fa-regular fa-envelope me-2"></i> Liên hệ khách hàng</a>
+                                <a href="tel:<?=$don_hang['so_dien_thoai']?>" class="btn btn-outline-success me-2"><i class="fa-solid fa-phone-volume me-2"></i> Liên hệ khách hàng</a>
+                                <a href="edit.php?id=<?=$ma_don_hang?>&state=update" class="btn btn-outline-success me-2"><i class="fa-solid fa-repeat me-2"></i>Cập nhật trạng thái đơn hàng</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Xóa tài sản phẩm</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Bạn chắc chắn muốn xóa vĩnh viễn tài khoản này?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger btn-delete-product">Xóa</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
         </div>
@@ -299,32 +335,14 @@
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 
-    <!-- DataTables JS -->
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
-
     <script src="../assets/js/main.js"></script>
 
-
     <script>
-        $(document).ready( function () {
-            $('#table-list-products').DataTable();
-        } );
+        const inputFile = document.querySelector('input[name="avatar"]');
+        const gridImg = document.querySelector('.grid-img');
 
-
-        document.addEventListener("DOMContentLoaded", function() {
-            let id;
-
-            const btnDelete = document.querySelector('.btn-delete-product');
-            const exampleModal = document.getElementById('exampleModal')
-            exampleModal.addEventListener('show.bs.modal', event => {
-                const button = event.relatedTarget;
-                
-                id = button.getAttribute('data-id');
-
-                btnDelete.setAttribute('href', id);
-            });
-        })
-
+        uploadFile(inputFile, gridImg);
     </script>
+
 </body>
 </html>

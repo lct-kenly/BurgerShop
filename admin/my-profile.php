@@ -11,17 +11,15 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
 
     <!-- Base CSS -->
-    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="./assets/css/base.css">
 
     <!-- Style CSS -->
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
 
     <!-- Responsive CSS -->
-    <link rel="stylesheet" href="../assets/css/responsive.css">
+    <link rel="stylesheet" href="./assets/css/responsive.css">
 
     <title>ADMIN</title>
 </head>
@@ -34,16 +32,18 @@
 
             <!-- Logo brand -->
             <div class="app-brand">
-                <a href="../index.html" class="">
+                <a href="" class="">
                     <h5>APP BRAND</h5>
                 </a>
             </div>
 
+            <button type="button" class="btn-close-nav-mobile" data-bs-dismiss="offcanvas"><i class="fa-solid fa-angle-left"></i></button>
+
             <!-- Menu inner -->
             
             <ul class="menu-inner">
-                <li class="menu-item">
-                    <a href="../index.html" class="menu-link">
+                <li class="menu-item active">
+                    <a href="./index.php" class="menu-link active">
                         <i class="fa-solid fa-house menu-icon"></i>                        
                         <span>Trang chủ</span>              
                     </a>
@@ -63,13 +63,13 @@
 
                     <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="../users/list.html" class="menu-link">
+                            <a href="./users/list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="../users/add.html" class="menu-link">
+                            <a href="./users/add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -91,13 +91,13 @@
 
                     <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="../products/list.html" class="menu-link">
+                            <a href="./products/list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="../products/add.html" class="menu-link">
+                            <a href="./products/add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -110,21 +110,21 @@
                     <span>orders</span>
                 </li>
 
-                <li class="menu-item active">
-                    <a href="" class="menu-link menu-toggle active">
+                <li class="menu-item">
+                    <a href="" class="menu-link menu-toggle">
                         <i class="fa-solid fa-list-check menu-icon"></i>                      
                         <span>Đơn hàng</span>              
                     </a>
 
-                    <ul class="menu-sub open">
+                    <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="./list.html" class="menu-link active">
+                            <a href="./orders/list.php" class="menu-link">
                                 <span>Danh sách</span>              
                             </a>
                         </li>
 
                         <li class="menu-item">
-                            <a href="./add.html" class="menu-link">
+                            <a href="./orders/add.php" class="menu-link">
                                 <span>Thêm</span>              
                             </a>
                         </li>
@@ -154,11 +154,11 @@
                             <div class="page-header-right">
                                 <div class="profile">
                                     <button class="dropdown-btn">
-                                        <img src="../assets/img/1.png" alt="avatar" class="avatar">
+                                        <img src="./assets/img/1.png" alt="avatar" class="avatar">
                                     </button>
                                     <ul class="dropdown">
                                         <li class="dropdown-item">
-                                            <img src="../assets/img/1.png" alt="avatar" class="avatar">
+                                            <img src="./assets/img/1.png" alt="avatar" class="avatar">
                                             <div class="dropdown-content">
                                                 <p>Thanh</p>
                                                 <span>Admin</span>
@@ -168,7 +168,7 @@
                                         <li class="divider"></li>
 
                                         <li class="dropdown-item">
-                                            <a href="../my-profile.html" class="dropdown-link">
+                                            <a href="" class="dropdown-link">
                                                 <i class="fa-regular fa-address-card"></i>
                                                 <span>Thông tin tài khoản</span>
                                             </a>
@@ -192,7 +192,7 @@
                                         <li class="divider"></li>
 
                                         <li class="dropdown-item">
-                                            <a href="" class="dropdown-link">
+                                            <a href="../logout.php" class="dropdown-link">
                                                 <i class="fa-solid fa-power-off"></i>
                                                 <span>Đăng xuất</span>
                                             </a>
@@ -208,90 +208,92 @@
 
             <!-- Page content -->
             <div class="container-fluid">
-                <!-- <div class="row mt-4">
-                    <div class="col-md-12">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb ms-4">
-                                <li class="breadcrumb-item"><a href="../index.html" class="text-decoration-none fs-5">Trang chủ</a></li>
-                                <li class="breadcrumb-item"><a href="./add.html" class="text-decoration-none fs-5">Khách hàng</a></li>
-                                <li class="breadcrumb-item active fs-5" aria-current="page">Thêm tài khoản</li>
-                            </ol>
-                        </nav>
-                    </div>
-                </div> -->
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="page-content bg-white rounded-3 p-4">
-                            <table class="table table-bordered display mt-3" id="table-list-products">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">ID</th>
-                                    <th scope="col">Mã đơn hàng</th>
-                                    <th scope="col">Ngày lập</th>
-                                    <th scope="col">Trạng thái</th>
-                                    <th scope="col">Hành động</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>Otto</td>
-                                    <td>
-                                        <a href="./edit.html" class="btn btn-sm btn-outline-info"><i class="fa-regular fa-pen-to-square"></i></a>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="id-test">
-                                            <i class="fa-regular fa-trash-can"></i>
-                                        </button>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">2</th>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>Thornton</td>
-                                    <td>
-                                        <a href="./edit.html" class="btn btn-sm btn-outline-info"><i class="fa-regular fa-pen-to-square"></i></a>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="id-test">
-                                            <i class="fa-regular fa-trash-can"></i>
-                                        </button>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">3</th>
-                                    <td>Larry the Bird</td>
-                                    <td>@twitter</td>
-                                    <td>@twitter</td>
-                                    <td>
-                                        <a href="./edit.html" class="btn btn-sm btn-outline-info"><i class="fa-regular fa-pen-to-square"></i></a>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="id-test">
-                                            <i class="fa-regular fa-trash-can"></i>
-                                        </button>
-                                    </td> 
-                                  </tr>
-                                </tbody>
-                              </table>
+                        <div class="page-content bg-white rounded-3">
+                            <div class="page-content-header p-4">
+                                <h5>Thông tin tài khoản</h5>
+                                <div class="d-flex mt-4">
+                                    <img src="./assets/img/1.png" alt="">
+                                    <div>
+                                        <div>
+                                            <label for="avatar" class="form-label btn btn-upload"></label>
+                                            <input type="file" class="form-control" id="avatar" name="avatar" form="form-profile">
+
+                                            <a href="" class="btn btn-outline-secondary btn-reset"></a>
+                                        </div>
+
+                                        <p class="mt-4">Allowed JPG, JPEG or PNG. Max size of 800K</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="divider"></div>
+
+                            <form class="p-4" id="form-profile">
+                                <div class="form-group-flex">
+                                    <div class="form-group">
+                                        <label for="fullname" class="form-label">Họ tên</label>
+                                        <input type="text" class="form-control" id="fullname" placeholder="VD: Nguyễn Văn A">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" placeholder="VD: example@gmail.com">
+                                    </div>
+                                </div>
+
+                                <div class="form-group-flex">
+                                    <div class="form-group">
+                                        <label for="account" class="form-label">Tên tài khoản</label>
+                                        <input type="text" class="form-control" id="account" name="fullname" placeholder="VD: abc123">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password" class="form-label">Mật khẩu</label>
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="******">
+                                    </div>
+                                </div>
+
+                                <div class="form-group-flex">
+                                    <div class="form-group">
+                                        <label for="phone" class="form-label">Số điện thoại</label>
+                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="VD: 0123456789">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="address" class="form-label">Địa chỉ</label>
+                                        <textarea class="form-control" name="address" id="address" name="address" cols="30" rows="1"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group-flex">
+                                    <div class="form-group">
+                                        <label for="phone" class="form-label">Level</label>
+                                        <select class="form-select" name="level" aria-label="Default select example">
+                                            <option value="0">0 - Admin</option>
+                                            <option value="1">1 - User</option>
+                                          </select>
+                                    </div>
+                                </div>
+                                <button type="submit" name="submit" value="submit" class="btn-submit-form">Xác nhận</button>
+                            </form>
+                        </div>
+
+                        <div class="page-content-second bg-white rounded-3 mt-3 mx-3 p-4 ">
+                            <h5>Xóa tài khoản</h5>
+
+                            <p class="my-3 p-3 bg-warning bg-opacity-10 rounded-3 text-warning">
+                                <span class="fw-bold">Are you sure you want to delete your account?</span> <br>
+                                Once you delete your account, there is no going back. Please be certain.
+                            </p>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" name="check-delete-account">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                  Xác nhận xóa tài khoản
+                                </label>
+                            </div>
+
+                            <a href="" class="btn btn-danger mt-3 btn-delete-account disabled">Xóa tài khoản</a>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Xóa tài sản phẩm</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Bạn chắc chắn muốn xóa vĩnh viễn tài khoản này?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger btn-delete-product">Xóa</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
         </div>
@@ -303,32 +305,35 @@
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 
-    <!-- DataTables JS -->
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
-
-    <script src="../assets/js/main.js"></script>
-
+    <script src="./assets/js/main.js"></script>
 
     <script>
-        $(document).ready( function () {
-            $('#table-list-products').DataTable();
-        } );
+
+        // change inner html input avatar, button reset
+        if(window.innerWidth < 576) {
+            document.querySelector('.btn-upload').innerHTML = '<i class="fa-solid fa-upload"></i>';
+            document.querySelector('.btn-reset').innerHTML = '<i class="fa-solid fa-rotate-right"></i>';
+        } else {
+            document.querySelector('.btn-upload').innerHTML = 'Upload new photo';
+            document.querySelector('.btn-reset').innerHTML = 'Reset';
+        }
 
 
-        document.addEventListener("DOMContentLoaded", function() {
-            let id;
 
-            const btnDelete = document.querySelector('.btn-delete-product');
-            const exampleModal = document.getElementById('exampleModal')
-            exampleModal.addEventListener('show.bs.modal', event => {
-                const button = event.relatedTarget;
-                
-                id = button.getAttribute('data-id');
+        // on/off disabled button delete account
 
-                btnDelete.setAttribute('href', id);
-            });
-        })
+        const checkBoxDelete = document.querySelector('input[name="check-delete-account"]');
+        const checkBtnDelete = document.querySelector('.btn-delete-account');
+        checkBoxDelete.onchange = function() {
+            if(checkBoxDelete.checked) {
+                checkBtnDelete.classList.remove('disabled');
+            } else {
+                checkBtnDelete.classList.add('disabled');
+            }
+        }
+
 
     </script>
+
 </body>
 </html>
