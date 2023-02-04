@@ -2,10 +2,85 @@
     $conn = mysqli_connect('localhost', 'root', '', 'burger-shop') or die('Couldn\'t connect to Database');
 
     session_start();
+    date_default_timezone_set('Asia/Ho_Chi_Minh'); 
 
     if(!isset($_SESSION['admin_logged'])) {
-        header('location: ../../account.php');
+        header('location: ../account.php');
     }
+
+    function tong_don($conn, $thoi_gian) {
+        $data = 0;
+        
+        $thang_hien_tai = date("m");
+        $thang_truoc = date("m") - 1;
+        $ngay_hien_tai = date("d");
+        $ngay_truoc = date("d") - 1;
+
+        switch($thoi_gian) {
+            case $ngay_hien_tai: $where = 'DAY(don_hang.created_at) = DAY(NOW())'; break;
+            case $ngay_truoc: $where = 'DAY(don_hang.created_at) = DAY(NOW()) - 1'; break;
+            case $thang_hien_tai: $where = 'MONTH(don_hang.created_at) = MONTH(NOW())'; break;
+            case $thang_truoc: $where = 'MONTH(don_hang.created_at) = MONTH(NOW()) - 1'; break;
+        }
+
+        $sql = "SELECT COUNT(don_hang.ma_don_hang) AS TONG_DON
+                FROM don_hang
+                WHERE " . $where;
+
+        $query = mysqli_query($conn, $sql);
+        
+        if(mysqli_num_rows($query) > 0) {
+            $data = mysqli_fetch_assoc($query)['TONG_DON'];
+        }
+
+        return $data;
+    }
+
+    function doanh_thu($conn, $thoi_gian) {
+        $data = 0;
+        
+        $thang_hien_tai = date("m");
+        $thang_truoc = date("m") - 1;
+        $ngay_hien_tai = date("d");
+        $ngay_truoc = date("d") - 1;
+
+        switch($thoi_gian) {
+            case $ngay_hien_tai: $where = 'DAY(don_hang.created_at) = DAY(NOW())'; break;
+            case $ngay_truoc: $where = 'DAY(don_hang.created_at) = DAY(NOW()) - 1'; break;
+            case $thang_hien_tai: $where = 'MONTH(don_hang.created_at) = MONTH(NOW())'; break;
+            case $thang_truoc: $where = 'MONTH(don_hang.created_at) = MONTH(NOW()) - 1'; break;
+        }
+
+        $sql = "SELECT SUM(chi_tiet_don_hang.tri_gia) AS TONG_DOANH_THU
+                FROM chi_tiet_don_hang, don_hang
+                WHERE don_hang.ma_don_hang = chi_tiet_don_hang.ma_don_hang AND " .$where;
+
+        $query = mysqli_query($conn, $sql);
+        
+        if(mysqli_num_rows($query) > 0) {
+            $data = mysqli_fetch_assoc($query)['TONG_DOANH_THU'];
+        }
+
+        return $data;
+    }
+
+    $tong_don_thang = tong_don($conn, date('m'));
+    $tong_don_thang_truoc = tong_don($conn, date('m') - 1);
+    $tong_don_ngay = tong_don($conn, date('d'));
+    $tong_don_ngay_truoc = tong_don($conn, date('d') - 1);
+
+    $doanh_thu_thang = doanh_thu($conn, date('m'));
+    $doanh_thu_thang_truoc = doanh_thu($conn, date('m') - 1);
+    $doanh_thu_ngay = doanh_thu($conn, date('d'));
+    $doanh_thu_ngay_truoc = doanh_thu($conn, date('d') - 1);
+
+    $tang_truong_doanh_thu_thang = ($doanh_thu_thang - $doanh_thu_thang_truoc) / 100;
+    $tang_truong_doanh_thu_ngay = ($doanh_thu_ngay - $doanh_thu_ngay_truoc) / 100;
+    $tang_truong_tong_don_thang = ($tong_don_thang - $tong_don_thang_truoc) / 100;
+    $tang_truong_tong_don_ngay = ($tong_don_ngay - $tong_don_ngay_truoc) / 100;
+    
+
+    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -232,8 +307,12 @@
                                           </div>
 
                                           <div class="card-body-right">
-                                            <p class="card-total">50.000.000 </br> VND</p>
-                                            <p class="text-success"><i class="fa-solid fa-arrow-trend-up"></i> +10.8%</p>
+                                            <p class="card-total"><?php echo $doanh_thu_thang ?>$</p>
+                                            <?php if($tang_truong_doanh_thu_thang > 0) { ?>
+                                                <p class="text-success"><i class="fa-solid fa-arrow-trend-up"></i> +<?=$tang_truong_doanh_thu_thang?>%</p>
+                                            <?php } else { ?>
+                                                <p class="text-danger"><i class="fa-solid fa-arrow-trend-down"></i> <?=$tang_truong_doanh_thu_thang?>%</p>
+                                            <?php } ?>
                                           </div>
                                         </div>
                                     </div>
@@ -250,8 +329,12 @@
                                           </div>
 
                                           <div class="card-body-right">
-                                            <p class="card-total">1.150.000 </br> VND</p>
-                                            <p class="text-danger"><i class="fa-solid fa-arrow-trend-down"></i> -5.8%</p>
+                                            <p class="card-total"><?php echo $doanh_thu_ngay ?>$</p>
+                                            <?php if($tang_truong_doanh_thu_ngay > 0) { ?>
+                                                <p class="text-success"><i class="fa-solid fa-arrow-trend-up"></i> +<?=$tang_truong_doanh_thu_ngay?>%</p>
+                                            <?php } else { ?>
+                                                <p class="text-danger"><i class="fa-solid fa-arrow-trend-down"></i> <?=$tang_truong_doanh_thu_ngay?>%</p>
+                                            <?php } ?>
                                           </div>
                                         </div>
                                     </div>
@@ -264,12 +347,16 @@
                                             <span class="card-icon bg-info bg-opacity-10">
                                                 <i class="fa-solid fa-bag-shopping text-info"></i>
                                             </span>
-                                            <p class="card-text">Tổng đơn hàng</p>
+                                            <p class="card-text">Tổng đơn tháng</p>
                                           </div>
 
                                           <div class="card-body-right">
-                                            <p class="card-total">200 </br> ĐƠN</p>
-                                            <p class="text-success"><i class="fa-solid fa-arrow-trend-up"></i> +10.8%</p>
+                                            <p class="card-total"><?php echo $tong_don_thang ?></p>
+                                            <?php if($tang_truong_tong_don_thang > 0) { ?>
+                                                <p class="text-success"><i class="fa-solid fa-arrow-trend-up"></i> +<?=$tang_truong_tong_don_thang?>%</p>
+                                            <?php } else { ?>
+                                                <p class="text-danger"><i class="fa-solid fa-arrow-trend-down"></i> <?=$tang_truong_tong_don_thang?>%</p>
+                                            <?php } ?>
                                           </div>
                                         </div>
                                     </div>
@@ -282,12 +369,16 @@
                                             <span class="card-icon bg-warning bg-opacity-10">
                                                 <i class="fa-solid fa-burger text-warning"></i>
                                             </span>
-                                            <p class="card-text">Tổng sản phẩm</p>
+                                            <p class="card-text">Tổng đơn ngày</p>
                                           </div>
 
                                           <div class="card-body-right">
-                                            <p class="card-total">1000 </br> SP</p>
-                                            <p class="text-danger"><i class="fa-solid fa-arrow-trend-down"></i> -12.8%</p>
+                                            <p class="card-total"><?php echo $tong_don_ngay ?></p>
+                                            <?php if($tang_truong_tong_don_ngay > 0) { ?>
+                                                <p class="text-success"><i class="fa-solid fa-arrow-trend-up"></i> +<?=$tang_truong_tong_don_ngay?>%</p>
+                                            <?php } else { ?>
+                                                <p class="text-danger"><i class="fa-solid fa-arrow-trend-down"></i> <?=$tang_truong_tong_don_ngay?>%</p>
+                                            <?php } ?>
                                           </div>
                                         </div>
                                     </div>
