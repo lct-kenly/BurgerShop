@@ -95,3 +95,35 @@ $('.tab-item a').click(function(e) {
     $(id).addClass('active');
 
 })
+
+//upload file image
+function uploadFile(inputFile, grid) {
+    // Khởi tạo đối tượng FileReader
+    const reader = new FileReader();
+
+    // Lắng nghe trạng thái đăng tải tệp
+    inputFile.addEventListener("change", (event) => {
+        // Lấy thông tin tập tin được đăng tải
+        const files  = event.target.files;
+        
+        // Đọc thông tin tập tin đã được đăng tải
+        reader.readAsDataURL(files[0]);
+
+        const getSizeImage = files[0].size;
+        
+        if(getSizeImage > 1024 * 800) {
+            alert("Chỉ cho phép tải tệp tin nhỏ hơn 800KB");
+        } 
+            
+        else{
+            alert("Đăng tải tệp thành công");
+            // Lắng nghe quá trình đọc tập tin hoàn thành
+            reader.addEventListener("load", (event) => {
+                // Lấy chuỗi Binary thông tin hình ảnh
+                const img = grid.querySelector('img');
+
+                img.setAttribute("src", event.target.result);
+            })
+        }
+    })
+}

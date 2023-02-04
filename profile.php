@@ -5,12 +5,155 @@
     session_start();
 
     if(isset($_SESSION['user_logged'])) {
-        $user = $_SESSION['user_logged'];
+        $user_logged = $_SESSION['user_logged'];
 
         include('./libs/helper.php');
 
-        $countID_cart = get_count_cart($conn, $user['id']) ?? 0;
+        $countID_cart = get_count_cart($conn, $user_logged['id']) ?? 0;
 
+        $error = array();
+        
+        $sql = "SELECT * FROM khach_hang WHERE id = '{$user_logged['id']}' "; 
+
+        $query = mysqli_query($conn, $sql);
+
+        if(mysqli_num_rows($query) > 0) {
+            $user = mysqli_fetch_assoc($query);
+        }
+
+        if(isset($_POST['submit']) && $_POST['submit'] == 'submit') {
+            $account = isset($_POST['account']) ? addslashes($_POST['account']) : '';
+            $fullname = isset($_POST['fullname']) ? addslashes($_POST['fullname']) : '';
+            $email = isset($_POST['email']) ? addslashes($_POST['email']) : '';
+            $password = isset($_POST['password']) ? addslashes($_POST['password']) : '';
+            $phone = isset($_POST['phone']) ? addslashes($_POST['phone']) : '';
+            $address = isset($_POST['address']) ? addslashes($_POST['address']) : '';
+            $avatar = $_FILES["avatar"]["name"];
+            $tempname = $_FILES["avatar"]["tmp_name"];
+            $folder = "./storage/uploads/" . $avatar;
+
+            if(empty($account)) {
+                $error['account'] = 'Bạn chưa nhập tên tài khoản';
+            }
+
+            if(empty($fullname)) {
+                $error['fullname'] = 'Bạn chưa nhập họ tên';
+            }
+
+            if(empty($email)) {
+                $error['email'] = 'Bạn chưa nhập email';
+            } else if(!filter_var($email, FILTER_VALIDATE_EMAIL)){ // Kiểm tra định dạng email
+                $error['email'] = 'Email chưa đúng định dạng!';
+            }
+
+            if(empty($password)) {
+                $error['password'] = 'Bạn chưa nhập mật khẩu';
+            }
+
+            if(empty($phone)) {
+                $error['phone'] = 'Bạn chưa nhập số điện thoại';
+            }
+
+            if(empty($address)) {
+                $error['address'] = 'Bạn chưa nhập địa chỉ';
+            }
+
+            if($_FILES['avatar']['error'] > 0) {
+                $avatar = $user['avatar'];
+            } else {
+                move_uploaded_file($tempname ,$folder);
+            }
+
+            // Nếu không có lỗi
+            if(!($error)) {
+
+                $data_update = array(
+                    'ten_tai_khoan' => $account,
+                    'ho_ten' => $fullname,
+                    'so_dien_thoai' => $phone,
+                    'dia_chi' => $address,
+                    'email' => $email,
+                    'mat_khau' => $password,
+                    'avatar' => $avatar,
+                );
+
+                
+
+                $newData = array_diff($data_update, $user);
+
+                // Nếu tồn tại tên tài khoản, email hoặc số điện thoại thì báo lỗi
+                if(isset($newData['ten_tai_khoan']) && $newData['ten_tai_khoan'] != '') {
+                    $sql = "SELECT * FROM khach_hang WHERE ten_tai_khoan = '{$newData['ten_tai_khoan']}' ";
+
+                    $query = mysqli_query($conn, $sql);
+
+                    if(mysqli_num_rows($query) > 0) {
+                        $error['account'] = 'Tài khoản đã tồn tại';
+                    }
+                }
+                
+                // Nếu tồn tại tên tài khoản, email hoặc số điện thoại thì báo lỗi
+                if(isset($newData['email']) && $newData['email'] != '') {
+                    $sql = "SELECT * FROM khach_hang WHERE email = '{$newData['email']}' ";
+
+                    $query = mysqli_query($conn, $sql);
+
+                    if(mysqli_num_rows($query) > 0) {
+                        $error['email'] = 'Email đã tồn tại';
+                    }
+                }
+
+                // Nếu tồn tại tên tài khoản, email hoặc số điện thoại thì báo lỗi
+                if(isset($newData['so_dien_thoai']) && $newData['so_dien_thoai'] != '') {
+                    $sql = "SELECT * FROM khach_hang WHERE so_dien_thoai = '{$newData['so_dien_thoai']}' ";
+
+                    $query = mysqli_query($conn, $sql);
+
+                    if(mysqli_num_rows($query) > 0) {
+                        $error['phone'] = 'Số điện thoại đã tồn tại';
+                    }
+                }
+
+
+                if(!($error)) {
+
+                    if(!empty($newData)) {
+                        $sql = "";
+
+                        foreach($newData as $key => $val) {
+                            $sql .= $key . "='" . addslashes($val) . "'" . ",";
+                        }
+
+                        $sql = trim($sql, ',');
+
+                        $newSql = "UPDATE khach_hang SET $sql  WHERE id = '{$user['id']}'";
+
+                        if(mysqli_query($conn, $newSql)) {
+                            echo "<script>
+                                    alert('Cập nhật tài khoản thành công!');
+                                    window.location.href = 'profile.php';
+                                </script>";
+                        } else {
+                            echo "<script>
+                                    alert('Có lỗi trong quá trình xử lý, vui lòng thử lại!');
+                                </script>";
+                        }
+                    } else {
+                        echo "<script>
+                                    alert('Cập nhật tài khoản thành công!');
+                                    window.location.href = 'profile.php';
+                                </script>";
+                    }
+                }
+
+            }
+        }
+
+    } else {
+        echo "<script>
+                  alert('Vui lòng đăng nhập để tiếp tục!');
+                  window.location.href = './account.php';
+              </script>";
     }
 
 ?>
@@ -82,7 +225,7 @@
               <li class="nav-item">
                 <a class="nav-link" href="cart.php">Cart</a>
               </li>
-              <li class="nav-item active">
+              <li class="nav-item">
                 <a class="nav-link" href="book.php">Book Table <span class="sr-only">(current)</span> </a>
               </li>
             </ul>
@@ -94,7 +237,7 @@
 
               <div class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
                 <span><i class="fa fa-search" aria-hidden="true"></i></span>
-                <form action="" class="form-search">
+                <!-- <form action="" class="form-search">
                   <div class="form-search-header">
                     <input class="form-control mr-sm-2" type="search" placeholder="Search..." aria-label="Search">
                     <button class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -105,7 +248,7 @@
                       <li class="list-group-item"><a href="">Cras justo odio</a></li>
                     </ul>
                   </div>
-                </form>
+                </form> -->
               </div>
               
               <?php if(isset($user)) { ?>
@@ -121,21 +264,21 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                          <a href="./profile.php"><i class="fa-regular fa-user"></i> Thông tin tài khoản</a>
+                          <a href="./profile.php"><i class="fa-regular fa-user"></i> My Profile</a>
                         </li>
                         <li>
-                          <a href="./order.php"><i class="fa-solid fa-list-check"></i> Đơn hàng của bạn</a>
+                          <a href="./order.php"><i class="fa-solid fa-list-check"></i> My Purchase Order</a>
                         </li>
                         <li class="divider"></li>
                         <li>
-                          <a href="./logout.php"><i class="fa-solid fa-power-off"></i> Đăng xuất</a>
+                          <a href="./logout.php"><i class="fa-solid fa-power-off"></i> Log Out</a>
                         </li>
                     </ul>
                 </div>
               <?php } else { ?>
                 <a href="account.php" class="user_link">
                   <i class="fa fa-user mr-2" aria-hidden="true"></i>
-                  Đăng nhập
+                  Login
                 </a>
               <?php } ?>
             </div>
@@ -156,18 +299,18 @@
       </div>
       <div class="row">
         <div class="col-lg-3 col-md-4 col-12">
-            <div class="text-center mt-3">
-                <img src="<?php echo !empty($user['avatar']) ? './storage/uploads/'.$user['avatar'] : './images/avatar-.jpg'?>" alt="" style="width: 100px; height: 100px">
-                <p></p>
-                <label for="avatar">Upload new avatar</label>
-                <input type="file" id="avatar" class="form-control" name="avatar" form="form-profile">
+            <div class="grid-img text-center mt-3">
+                <img src="<?php echo !empty($user['avatar']) ? './storage/uploads/'.$user['avatar'] : './images/avatar-.jpg'?>" alt="" class="border" style="width: 100px; height: 100px">
+                <p class="form-text my-4" style="font-size: 12px">Allowed JPG, JPEG or PNG. Max size of 800K</p>
+                <label for="avatar" class="btn btn-primary">Upload new avatar</label>
+                <input type="file" id="avatar" class="form-control d-none" name="avatar" form="form-profile">
             </div>
         </div>
         <div class="col-lg-9 col-md-8 col-12">
             <form id="form-profile" method="POST" action="./profile.php?id=<?php echo $user['id']; ?>" enctype="multipart/form-data">
                 <div class="form-group-flex">
                     <div class="form-group">
-                        <label for="fullname" class="form-label">Họ tên</label>
+                        <label for="fullname" class="form-label">Name</label>
                         <input type="text" class="form-control" id="fullname" name="fullname" placeholder="VD: Nguyễn Văn A" value="<?php echo isset($user['ho_ten']) ? $user['ho_ten'] : ''; ?>">
                         <span class="form-text ms-3 text-danger"><?php echo !(empty($error['fullname'])) ? $error['fullname'] : ''; ?></span>
                     </div>
@@ -180,12 +323,12 @@
 
                 <div class="form-group-flex">
                     <div class="form-group">
-                        <label for="account" class="form-label">Tên tài khoản</label>
+                        <label for="account" class="form-label">Username</label>
                         <input type="text" class="form-control" id="account" name="account" placeholder="VD: abc123" value="<?php echo isset($user['ten_tai_khoan']) ? $user['ten_tai_khoan'] : ''; ?>">
                         <span class="form-text ms-3 text-danger"><?php echo !(empty($error['account'])) ? $error['account'] : ''; ?></span>
                     </div>
                     <div class="form-group position-relative">
-                        <label for="password" class="form-label">Mật khẩu</label>
+                        <label for="password" class="form-label">Password</label>
 
                         <input type="password" class="form-control" id="password" name="password" placeholder="******" value="<?php echo isset($user['mat_khau']) ? $user['mat_khau'] : ''; ?>">
 
@@ -197,17 +340,17 @@
 
                 <div class="form-group-flex">
                     <div class="form-group">
-                        <label for="phone" class="form-label">Số điện thoại</label>
+                        <label for="phone" class="form-label">Number phone</label>
                         <input type="tel" class="form-control" id="phone" name="phone" placeholder="VD: 0123456789" value="<?php echo isset($user['so_dien_thoai']) ? $user['so_dien_thoai'] : ''; ?>">
                         <span class="form-text ms-3 text-danger"><?php echo !(empty($error['phone'])) ? $error['phone'] : ''; ?></span>
                     </div>
                     <div class="form-group">
-                        <label for="address" class="form-label">Địa chỉ</label>
+                        <label for="address" class="form-label">Address</label>
                         <textarea class="form-control" name="address" id="address" name="address" cols="30" rows="1"><?php echo isset($user['dia_chi']) ? $user['dia_chi'] : ''; ?></textarea>
                         <span class="form-text ms-3 text-danger"><?php echo !(empty($error['address'])) ? $error['address'] : ''; ?></span>
                     </div>
                 </div>
-                <button type="submit" name="submit" value="submit" class="btn-submit-form">Cập nhật</button>
+                <button type="submit" name="submit" value="submit" class="btn-submit-form">Submit</button>
             </form>
         </div>
       </div>
@@ -215,87 +358,9 @@
   </section>
   <!-- end book section -->
 
-  <!-- footer section -->
-  <footer class="footer_section">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-4 footer-col">
-          <div class="footer_contact">
-            <h4>
-              Contact Us
-            </h4>
-            <div class="contact_link_box">
-              <a href="">
-                <i class="fa fa-map-marker" aria-hidden="true"></i>
-                <span>
-                  Location
-                </span>
-              </a>
-              <a href="">
-                <i class="fa fa-phone" aria-hidden="true"></i>
-                <span>
-                  Call +01 1234567890
-                </span>
-              </a>
-              <a href="">
-                <i class="fa fa-envelope" aria-hidden="true"></i>
-                <span>
-                  demo@gmail.com
-                </span>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 footer-col">
-          <div class="footer_detail">
-            <a href="" class="footer-logo">
-              Feane
-            </a>
-            <p>
-              Necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with
-            </p>
-            <div class="footer_social">
-              <a href="">
-                <i class="fa fa-facebook" aria-hidden="true"></i>
-              </a>
-              <a href="">
-                <i class="fa fa-twitter" aria-hidden="true"></i>
-              </a>
-              <a href="">
-                <i class="fa fa-linkedin" aria-hidden="true"></i>
-              </a>
-              <a href="">
-                <i class="fa fa-instagram" aria-hidden="true"></i>
-              </a>
-              <a href="">
-                <i class="fa fa-pinterest" aria-hidden="true"></i>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 footer-col">
-          <h4>
-            Opening Hours
-          </h4>
-          <p>
-            Everyday
-          </p>
-          <p>
-            10.00 Am -10.00 Pm
-          </p>
-        </div>
-      </div>
-      <div class="footer-info">
-        <p>
-          &copy; <span id="displayYear"></span>
-          <a href="https://html.design/"></a><br><br>
-          &copy; <span id="displayYear"></span>
-          <a href="https://themewagon.com/" target="_blank"></a>
-        </p>
-      </div>
-    </div>
-  </footer>
-  <!-- footer section -->
+  <?php
+    include_once('./partials/footer.php');
+  ?>
 
   <!-- jQery -->
   <script src="js/jquery-3.4.1.min.js"></script>
@@ -317,6 +382,13 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap">
   </script>
   <!-- End Google Map -->
+
+  <script>
+        const inputFile = document.querySelector('input[name="avatar"]');
+        const gridImg = document.querySelector('.grid-img');
+
+        uploadFile(inputFile, gridImg);
+  </script>
 
 </body>
 

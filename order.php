@@ -157,7 +157,7 @@
 
               <div class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
                 <span><i class="fa fa-search" aria-hidden="true"></i></span>
-                <form action="" class="form-search">
+                <!-- <form action="" class="form-search">
                   <div class="form-search-header">
                     <input class="form-control mr-sm-2" type="search" placeholder="Search..." aria-label="Search">
                     <button class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -168,7 +168,7 @@
                       <li class="list-group-item"><a href="">Cras justo odio</a></li>
                     </ul>
                   </div>
-                </form>
+                </form> -->
               </div>
               
               <?php if(isset($user)) { ?>
@@ -184,21 +184,21 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                          <a href="./profile.php"><i class="fa-regular fa-user"></i> Thông tin tài khoản</a>
+                          <a href="./profile.php"><i class="fa-regular fa-user"></i> My Profile</a>
                         </li>
                         <li>
-                          <a href="./order.php"><i class="fa-solid fa-list-check"></i> Đơn hàng của bạn</a>
+                          <a href="./order.php"><i class="fa-solid fa-list-check"></i> My Purchase Order</a>
                         </li>
                         <li class="divider"></li>
                         <li>
-                          <a href="./logout.php"><i class="fa-solid fa-power-off"></i> Đăng xuất</a>
+                          <a href="./logout.php"><i class="fa-solid fa-power-off"></i> Log Out</a>
                         </li>
                     </ul>
                 </div>
               <?php } else { ?>
                 <a href="account.php" class="user_link">
                   <i class="fa fa-user mr-2" aria-hidden="true"></i>
-                  Đăng nhập
+                  Login
                 </a>
               <?php } ?>
               </a>
@@ -427,87 +427,9 @@
   </section>
   <!-- end book section -->
 
-  <!-- footer section -->
-  <footer class="footer_section">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-4 footer-col">
-          <div class="footer_contact">
-            <h4>
-              Contact Us
-            </h4>
-            <div class="contact_link_box">
-              <a href="">
-                <i class="fa fa-map-marker" aria-hidden="true"></i>
-                <span>
-                  Location
-                </span>
-              </a>
-              <a href="">
-                <i class="fa fa-phone" aria-hidden="true"></i>
-                <span>
-                  Call +01 1234567890
-                </span>
-              </a>
-              <a href="">
-                <i class="fa fa-envelope" aria-hidden="true"></i>
-                <span>
-                  demo@gmail.com
-                </span>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 footer-col">
-          <div class="footer_detail">
-            <a href="" class="footer-logo">
-              Feane
-            </a>
-            <p>
-              Necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with
-            </p>
-            <div class="footer_social">
-              <a href="">
-                <i class="fa fa-facebook" aria-hidden="true"></i>
-              </a>
-              <a href="">
-                <i class="fa fa-twitter" aria-hidden="true"></i>
-              </a>
-              <a href="">
-                <i class="fa fa-linkedin" aria-hidden="true"></i>
-              </a>
-              <a href="">
-                <i class="fa fa-instagram" aria-hidden="true"></i>
-              </a>
-              <a href="">
-                <i class="fa fa-pinterest" aria-hidden="true"></i>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 footer-col">
-          <h4>
-            Opening Hours
-          </h4>
-          <p>
-            Everyday
-          </p>
-          <p>
-            10.00 Am -10.00 Pm
-          </p>
-        </div>
-      </div>
-      <div class="footer-info">
-        <p>
-          &copy; <span id="displayYear"></span>
-          <a href="https://html.design/"></a><br><br>
-          &copy; <span id="displayYear"></span>
-          <a href="https://themewagon.com/" target="_blank"></a>
-        </p>
-      </div>
-    </div>
-  </footer>
-  <!-- footer section -->
+  <?php
+    include_once('./partials/footer.php');
+  ?>
 
   <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
