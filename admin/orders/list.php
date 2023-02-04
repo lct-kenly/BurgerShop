@@ -14,6 +14,20 @@
     while ($row = mysqli_fetch_assoc($query)) {
         $don_hang[] = $row;
     }
+
+    function get_state($state) {
+        $trang_thai['id'] = $state;
+
+        switch($trang_thai['id']) {
+            case 0: $trang_thai['name'] = "Đơn hàng đang xử lý"; break;
+            case 1: $trang_thai['name'] = "Đơn hàng đã được xác nhận"; break;
+            case 2: $trang_thai['name'] = "Đơn hàng đã giao cho đơn vị vận chuyển"; break;
+            case 3: $trang_thai['name'] = "Giao hàng thành công"; break;
+            default: $trang_thai['name'] = "Đơn hàng đã hủy"; break;
+        }
+
+        return $trang_thai['name'];
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -251,13 +265,15 @@
                                   </tr>
                                 </thead>
                                 <tbody>
-                                <?php foreach ($don_hang as $item) {?>
+                                <?php foreach ($don_hang as $item) {
+                                    $trang_thai = get_state($item['trang_thai']);
+                                ?>
                                     <tr>
                                         <td><?=$item['ma_don_hang']?></td>
                                         <td><?=$item['id_khach_hang']?></td>
                                         <td><?=$item['created_at']?></td>
                                         <td><?=$item['thanh_toan']?></td>
-                                        <td><?=$item['trang_thai'] == 0 ? 'Đang xử lý' : 'Đơn hàng đã giao thành công';?></td>
+                                        <td><?=$trang_thai?></td>
                                         <td>
                                             <a href="./edit.php?id=<?=$item['ma_don_hang']?>" class="btn btn-sm btn-outline-info"><i class="fa-regular fa-pen-to-square"></i></a>
                                             <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="<?=$item['ma_don_hang']?>">

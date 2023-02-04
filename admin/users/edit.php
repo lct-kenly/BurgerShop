@@ -4,7 +4,7 @@
     session_start();
 
     if(!isset($_SESSION['admin_logged'])) {
-        header('location: ../../login.php');
+        header('location: ../../account.php');
     }
 
     $id_user = isset($_GET['id']) ? $_GET['id'] : '';

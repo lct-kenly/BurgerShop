@@ -1,10 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Open+Sans:wght@400;600;700&display=swap");
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: "Open Sans", sans-serif;
   color: #0c0c0c;
   background-color: #ffffff;
   overflow-x: hidden;
 }
+
 
 .vertical-center {
   display: table-cell;
@@ -1205,7 +1211,7 @@ a:focus {
 
 .show-password {
   position: absolute;
-  top: 50%;
+  top: 36%;
   right: 8px;
   transform: translateY(-50%);
 }
@@ -1342,4 +1348,103 @@ a:focus {
   height: 30px;
   margin-right: 8px;
   border-radius: 50%;
+}
+
+.pagination {
+  margin-top: 90px
+}
+
+.pagination li a,
+.pagination li a i {
+  font-size: 18px;
+  color: #697a8d;
+}
+
+.pagination li.active .page-link{
+  background-color: #ffbe33;
+  color: #fff;
+  border-color: #ffbe33;
+}
+
+.tab-list {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background-color: #fff;
+  padding-left: 0;
+  list-style: none;
+}
+
+.tab-list li {
+  flex: 2 1 auto;
+  text-align: center;
+}
+
+.tab-list li.active a{
+  color: #ffbe33;
+  border-bottom: 2px solid #ffbe33;
+}
+
+.tab-list li a {
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  background-color: transparent;
+  border: none;
+  color: #222222;
+  cursor: pointer;
+  transition: all .2s linear;
+}
+
+.tab-list li a:hover {
+  color: #ffbe33;
+}
+
+.tab-list li a:focus {
+  outline: none;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+form .form-group-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+form .form-group-flex .form-group {
+  width: 100%;
+  margin: 12px 8px;
+}
+
+form .form-group-flex .form-group label {
+  color: var(--text-color);
+}
+
+form .form-group-flex .form-group input:focus,
+form .form-group-flex .form-group textarea:focus,
+form .form-group-flex .form-group select:focus {
+  box-shadow: none;
+}
+
+form .btn-submit-form {
+  margin-top: 16px;
+  margin-left: 8px;
+  padding: 10px 16px;
+  background-color: #ffbe33;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  transition: all .2s linear;
+}
+
+form .btn-submit-form:focus {
+  outline: none;
 }

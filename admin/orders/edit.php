@@ -2,6 +2,9 @@
     $conn = mysqli_connect('localhost', 'root', '', 'burger-shop') or die('Couldn\'t connect to Database');
 
     session_start();
+    date_default_timezone_set('Asia/Ho_Chi_Minh'); 
+    $date_current = '';
+    $date_current = date("Y-m-d H:i:s");
 
     if(!isset($_SESSION['admin_logged'])) {
         header('location: ../../account.php');
@@ -28,14 +31,34 @@
         // select thông tin khách hàng
         $sql = "SELECT khach_hang.ho_ten, khach_hang.email, khach_hang.so_dien_thoai, don_hang.ma_don_hang, don_hang.created_at, don_hang.trang_thai, don_hang.thanh_toan, don_hang.id_khach_hang
                 FROM khach_hang, don_hang
-                WHERE khach_hang.id = don_hang.id_khach_hang";
+                WHERE khach_hang.id = don_hang.id_khach_hang AND don_hang.ma_don_hang={$ma_don_hang}";
         $query = mysqli_query($conn, $sql);
         if(mysqli_num_rows($query) > 0) {
             $don_hang = mysqli_fetch_assoc($query);
         }
 
-        if(isset($_GET['state']) && $_GET['state'] == 'update') {
-            $sql = "UPDATE don_hang SET trang_thai=1 WHERE ma_don_hang={$ma_don_hang} AND id_khach_hang={$don_hang['id_khach_hang']}";
+        $trang_thai['id'] = $don_hang['trang_thai'];
+
+        switch($trang_thai['id']) {
+            case 0: {$trang_thai['name'] = "Đơn hàng đang xử lý"; $trang_thai['update'] = "Xác nhận đơn hàng"; }; break;
+            case 1: {$trang_thai['name'] = "Đơn hàng đã được xác nhận"; $trang_thai['update'] = "Xác nhận đơn hàng đã giao đơn vị vận chuyển";}; break;
+            case 2: {$trang_thai['name'] = "Đơn hàng đã giao cho đơn vị vận chuyển"; $trang_thai['update'] = "Xác nhận giao hàng thành công";}; break;
+            case 3: {$trang_thai['name'] = "Giao hàng thành công"; $trang_thai['update'] = "Giao hàng thành công";}; break;
+            default: $trang_thai['name'] = "Đơn hàng đã hủy"; break;
+        }
+
+        if(isset($_GET['state'])) {
+
+            switch($_GET['state']) {
+                case 0: $state = 1; break;
+                case 1: $state = 2; break;
+                case 2: $state = 3; break;
+                case 3: $state = 3; break;
+                case 4: $state = 4; break;
+                default: $state = 3; break;
+            }
+
+            $sql = "UPDATE don_hang SET trang_thai={$state}, updated_at='{$date_current}' WHERE ma_don_hang={$ma_don_hang} AND id_khach_hang={$don_hang['id_khach_hang']}";
             $query = mysqli_query($conn, $sql);
             if($query) {
                 echo "<script>
@@ -281,11 +304,8 @@
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between">
                                     <p class="w-50 fw-bold">Ngày lập: <?php echo $don_hang['created_at']?></p>
-                                    <?php if($don_hang['trang_thai'] == 0) {?>
-                                        <p class="w-50 fw-bold">Trạng thái: <span class="text-danger">Đang xử lý</span></p>
-                                    <?php } else { ?>
-                                        <p class="w-50 fw-bold">Trạng thái: <span class="text-success">Đơn hàng đã giao thành công</span></p>
-                                    <?php } ?>
+                                    <p class="w-50 fw-bold">Trạng thái: <?php echo $trang_thai['name']?></p>
+                                
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between">
                                     <p class="w-50 fw-bold">Hình thức thanh toán: <?php echo $don_hang['thanh_toan']?></p>
@@ -320,7 +340,8 @@
                             <div>
                                 <a href="mailto:<?=$don_hang['email']?>" class="btn btn-outline-success me-2"><i class="fa-regular fa-envelope me-2"></i> Liên hệ khách hàng</a>
                                 <a href="tel:<?=$don_hang['so_dien_thoai']?>" class="btn btn-outline-success me-2"><i class="fa-solid fa-phone-volume me-2"></i> Liên hệ khách hàng</a>
-                                <a href="edit.php?id=<?=$ma_don_hang?>&state=update" class="btn btn-outline-success me-2"><i class="fa-solid fa-repeat me-2"></i>Cập nhật trạng thái đơn hàng</a>
+                                <a href="edit.php?id=<?=$ma_don_hang?>&state=<?=$don_hang['trang_thai']?>" class="btn btn-outline-success me-2"><i class="fa-solid fa-repeat me-2"></i><?=$trang_thai['update']?></a>
+                                <a href="edit.php?id=<?=$ma_don_hang?>&state=4" class="btn btn-outline-danger me-2"><i class="fa-solid fa-trash me-2"></i>Hủy đơn hàng</a>
                             </div>
                         </div>
                     </div>

@@ -83,4 +83,15 @@ $('.show-password').click(function(e) {
         $(this).find('i').removeClass('fa-eye');
         $(this).find('i').addClass('fa-eye-slash');
     }
+});
+
+// show tab
+$('.tab-item a').click(function(e) {
+    $('.tab-item.active').removeClass('active');
+    $('.tab-content.active').removeClass('active');
+
+    const id = $(this).attr('data-id');
+    $(this).parent().addClass('active');
+    $(id).addClass('active');
+
 })

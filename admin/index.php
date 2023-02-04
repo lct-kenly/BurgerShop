@@ -1,3 +1,12 @@
+<?php 
+    $conn = mysqli_connect('localhost', 'root', '', 'burger-shop') or die('Couldn\'t connect to Database');
+
+    session_start();
+
+    if(!isset($_SESSION['admin_logged'])) {
+        header('location: ../../account.php');
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

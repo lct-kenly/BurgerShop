@@ -161,7 +161,7 @@
               </li>
             </ul>
             <div class="user_option">
-              <a class="cart_link" href="#">
+              <a class="cart_link" href="./cart.php">
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span><?php echo $countID_cart ?? 0;?></span>
               </a>

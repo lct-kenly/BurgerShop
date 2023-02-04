@@ -124,7 +124,7 @@
     } else {
         echo "<script>
                 alert('Vui lòng đăng nhập để tiếp tục!');
-                window.location.href = './login.php';
+                window.location.href = './acount.php';
             </script>";
     }
 ?>

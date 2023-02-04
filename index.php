@@ -15,7 +15,8 @@
 
     $sql = "SELECT san_pham.id, san_pham.ten_san_pham, san_pham.mo_ta, san_pham.don_gia_ban, san_pham.hinh_anh, loai_hang.ten_loai
             FROM san_pham, loai_hang
-            WHERE san_pham.id_loai_hang=loai_hang.id";
+            WHERE san_pham.id_loai_hang=loai_hang.id
+            LIMIT 0,9";
     $query = mysqli_query($conn, $sql);
     while ($row = mysqli_fetch_assoc($query)) {
         $sanpham[] = $row;
@@ -100,7 +101,7 @@
               </li>
             </ul>
             <div class="user_option">
-              <a class="cart_link" href="#">
+              <a class="cart_link" href="./cart.php">
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span><?php echo $countID_cart ?? 0;?></span>
               </a>
@@ -174,7 +175,7 @@
                       Doloremque, itaque aperiam facilis rerum, commodi, temporibus sapiente ad mollitia laborum quam quisquam esse error unde. Tempora ex doloremque, labore, sunt repellat dolore, iste magni quos nihil ducimus libero ipsam.
                     </p>
                     <div class="btn-box">
-                      <a href="" class="btn1">
+                      <a href="./menu.php" class="btn1">
                         Order Now
                       </a>
                     </div>
@@ -195,7 +196,7 @@
                       Doloremque, itaque aperiam facilis rerum, commodi, temporibus sapiente ad mollitia laborum quam quisquam esse error unde. Tempora ex doloremque, labore, sunt repellat dolore, iste magni quos nihil ducimus libero ipsam.
                     </p>
                     <div class="btn-box">
-                      <a href="" class="btn1">
+                      <a href="./menu.php" class="btn1">
                         Order Now
                       </a>
                     </div>
@@ -216,7 +217,7 @@
                       Doloremque, itaque aperiam facilis rerum, commodi, temporibus sapiente ad mollitia laborum quam quisquam esse error unde. Tempora ex doloremque, labore, sunt repellat dolore, iste magni quos nihil ducimus libero ipsam.
                     </p>
                     <div class="btn-box">
-                      <a href="" class="btn1">
+                      <a href="./menu.php" class="btn1">
                         Order Now
                       </a>
                     </div>
@@ -257,7 +258,7 @@
                 <h6>
                   <span>20%</span> Off
                 </h6>
-                <a href="">
+                <a href="./menu.php">
                   Order Now <i class="fa-solid fa-cart-shopping"></i>
                 </a>
               </div>
@@ -275,7 +276,7 @@
                 <h6>
                   <span>15%</span> Off
                 </h6>
-                <a href="">
+                <a href="./menu.php">
                   Order Now <i class="fa-solid fa-cart-shopping"></i>
                 </a>
               </div>
@@ -329,7 +330,7 @@
         </div>
       </div>
       <div class="btn-box">
-        <a href="">
+        <a href="./menu.php">
           View More
         </a>
       </div>
@@ -362,7 +363,7 @@
               are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in
               the middle of text. All
             </p>
-            <a href="">
+            <a href="./about.php">
               Read More
             </a>
           </div>

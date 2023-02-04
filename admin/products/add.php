@@ -7,7 +7,7 @@
     $date_current = date("Y-m-d H:i:s");
 
     if(!isset($_SESSION['admin_logged'])) {
-        header('location: ../../login.php');
+        header('location: ../../account.php');
     }
 
     $error = array();
