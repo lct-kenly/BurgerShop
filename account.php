@@ -149,7 +149,7 @@
 
               <div class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
                 <span><i class="fa fa-search" aria-hidden="true"></i></span>
-                <form action="" class="form-search">
+                <!-- <form action="" class="form-search">
                   <div class="form-search-header">
                     <input class="form-control mr-sm-2" type="search" placeholder="Search..." aria-label="Search">
                     <button class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -160,7 +160,7 @@
                       <li class="list-group-item"><a href="">Cras justo odio</a></li>
                     </ul>
                   </div>
-                </form>
+                </form> -->
               </div>
               
               <?php if(isset($user)) { ?>
@@ -176,21 +176,21 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                          <a href="./profile.php"><i class="fa-regular fa-user"></i> Thông tin tài khoản</a>
+                          <a href="./profile.php"><i class="fa-regular fa-user"></i> My Profile</a>
                         </li>
                         <li>
-                          <a href="./order.php"><i class="fa-solid fa-list-check"></i> Đơn hàng của bạn</a>
+                          <a href="./order.php"><i class="fa-solid fa-list-check"></i> My Purchase Order</a>
                         </li>
                         <li class="divider"></li>
                         <li>
-                          <a href="./logout.php"><i class="fa-solid fa-power-off"></i> Đăng xuất</a>
+                          <a href="./logout.php"><i class="fa-solid fa-power-off"></i> Log Out</a>
                         </li>
                     </ul>
                 </div>
               <?php } else { ?>
                 <a href="account.php" class="user_link">
                   <i class="fa fa-user mr-2" aria-hidden="true"></i>
-                  Đăng nhập
+                  Login
                 </a>
               <?php } ?>
               </a>
