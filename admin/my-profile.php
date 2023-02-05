@@ -4,8 +4,151 @@
     session_start();
 
     if(!isset($_SESSION['admin_logged'])) {
-        header('location: ../../account.php');
+        header('location: ../account.php');
     }
+
+    $user_logged = $_SESSION['user_logged'];
+
+    $error = array();
+        
+    $sql = "SELECT * FROM khach_hang WHERE id = '{$user_logged['id']}' "; 
+
+    $query = mysqli_query($conn, $sql);
+
+    if(mysqli_num_rows($query) > 0) {
+        $user = mysqli_fetch_assoc($query);
+    }
+
+    if(isset($_POST['submit']) && $_POST['submit'] == 'submit') {
+        $account = isset($_POST['account']) ? addslashes($_POST['account']) : '';
+        $fullname = isset($_POST['fullname']) ? addslashes($_POST['fullname']) : '';
+        $email = isset($_POST['email']) ? addslashes($_POST['email']) : '';
+        $password = isset($_POST['password']) ? addslashes($_POST['password']) : '';
+        $phone = isset($_POST['phone']) ? addslashes($_POST['phone']) : '';
+        $address = isset($_POST['address']) ? addslashes($_POST['address']) : '';
+        $level = isset($_POST['level']) ? addslashes($_POST['level']) : 0;
+        $avatar = $_FILES["avatar"]["name"];
+        $tempname = $_FILES["avatar"]["tmp_name"];
+        $folder = "../storage/uploads/" . $avatar;
+
+        if(empty($account)) {
+            $error['account'] = 'Bạn chưa nhập tên tài khoản';
+        }
+
+        if(empty($fullname)) {
+            $error['fullname'] = 'Bạn chưa nhập họ tên';
+        }
+
+        if(empty($email)) {
+            $error['email'] = 'Bạn chưa nhập email';
+        } else if(!filter_var($email, FILTER_VALIDATE_EMAIL)){ // Kiểm tra định dạng email
+            $error['email'] = 'Email chưa đúng định dạng!';
+        }
+
+        if(empty($password)) {
+            $error['password'] = 'Bạn chưa nhập mật khẩu';
+        }
+
+        if(empty($phone)) {
+            $error['phone'] = 'Bạn chưa nhập số điện thoại';
+        }
+
+        if(empty($address)) {
+            $error['address'] = 'Bạn chưa nhập địa chỉ';
+        }
+
+        if($_FILES['avatar']['error'] > 0) {
+            $avatar = $user['avatar'];
+        } else {
+            move_uploaded_file($tempname ,$folder);
+        }
+
+        // Nếu không có lỗi
+        if(!($error)) {
+
+            $data_update = array(
+                'ten_tai_khoan' => $account,
+                'ho_ten' => $fullname,
+                'so_dien_thoai' => $phone,
+                'dia_chi' => $address,
+                'email' => $email,
+                'mat_khau' => $password,
+                'avatar' => $avatar,
+                'level' => $level,
+            );
+
+            
+
+            $newData = array_diff($data_update, $user);
+
+            // Nếu tồn tại tên tài khoản, email hoặc số điện thoại thì báo lỗi
+            if(isset($newData['ten_tai_khoan']) && $newData['ten_tai_khoan'] != '') {
+                $sql = "SELECT * FROM khach_hang WHERE ten_tai_khoan = '{$newData['ten_tai_khoan']}' ";
+
+                $query = mysqli_query($conn, $sql);
+
+                if(mysqli_num_rows($query) > 0) {
+                    $error['account'] = 'Tài khoản đã tồn tại';
+                }
+            }
+            
+            // Nếu tồn tại tên tài khoản, email hoặc số điện thoại thì báo lỗi
+            if(isset($newData['email']) && $newData['email'] != '') {
+                $sql = "SELECT * FROM khach_hang WHERE email = '{$newData['email']}' ";
+
+                $query = mysqli_query($conn, $sql);
+
+                if(mysqli_num_rows($query) > 0) {
+                    $error['email'] = 'Email đã tồn tại';
+                }
+            }
+
+            // Nếu tồn tại tên tài khoản, email hoặc số điện thoại thì báo lỗi
+            if(isset($newData['so_dien_thoai']) && $newData['so_dien_thoai'] != '') {
+                $sql = "SELECT * FROM khach_hang WHERE so_dien_thoai = '{$newData['so_dien_thoai']}' ";
+
+                $query = mysqli_query($conn, $sql);
+
+                if(mysqli_num_rows($query) > 0) {
+                    $error['phone'] = 'Số điện thoại đã tồn tại';
+                }
+            }
+
+
+            if(!($error)) {
+
+                if(!(empty($newData))) {
+                    $sql = "";
+
+                    foreach($newData as $key => $val) {
+                        $sql .= $key . "='" . addslashes($val) . "'" . ",";
+                    }
+
+                    $sql = trim($sql, ',');
+
+                    $newSql = "UPDATE khach_hang SET $sql  WHERE id = '{$user['id']}'";
+
+                    if(mysqli_query($conn, $newSql)) {
+                        echo "<script>
+                                alert('Cập nhật tài khoản thành công!');
+                                window.location.href = './my-profile.php';
+                            </script>";
+                    } else {
+                        echo "<script>
+                                alert('Có lỗi trong quá trình xử lý, vui lòng thử lại!');
+                            </script>";
+                    }
+                } else {
+                    echo "<script>
+                                alert('Cập nhật tài khoản thành công!');
+                                window.location.href = './my-profile.php';
+                            </script>";
+                }
+            }
+
+        }
+    }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -163,13 +306,13 @@
                             <div class="page-header-right">
                                 <div class="profile">
                                     <button class="dropdown-btn">
-                                        <img src="./assets/img/1.png" alt="avatar" class="avatar">
+                                        <img src="<?php echo !empty($user_logged['avatar']) ? '../storage/uploads/'. $user_logged['avatar'] : '../storage/uploads/1.png';?>" alt="avatar" class="avatar">
                                     </button>
                                     <ul class="dropdown">
                                         <li class="dropdown-item">
-                                            <img src="./assets/img/1.png" alt="avatar" class="avatar">
+                                            <img src="<?php echo !empty($user_logged['avatar']) ? '../storage/uploads/'. $user_logged['avatar'] : '../storage/uploads/1.png';?>" alt="avatar" class="avatar">
                                             <div class="dropdown-content">
-                                                <p>Thanh</p>
+                                                <p><?php echo !empty($user_logged['ten_tai_khoan']) ? $user_logged['ten_tai_khoan'] : 'Admin website';?></p>
                                                 <span>Admin</span>
                                             </div>
                                         </li>
@@ -222,7 +365,7 @@
                         <div class="page-content bg-white rounded-3">
                             <div class="page-content-header p-4">
                                 <h5>Thông tin tài khoản</h5>
-                                <div class="d-flex mt-4">
+                                <div class="upload-img d-flex mt-4">
                                     <img src="./assets/img/1.png" alt="">
                                     <div>
                                         <div>
@@ -239,45 +382,57 @@
 
                             <div class="divider"></div>
 
-                            <form class="p-4" id="form-profile">
+                            <form class="p-4" id="form-profile" method="POST" action="" enctype="multipart/form-data">
                                 <div class="form-group-flex">
                                     <div class="form-group">
                                         <label for="fullname" class="form-label">Họ tên</label>
-                                        <input type="text" class="form-control" id="fullname" placeholder="VD: Nguyễn Văn A">
+                                        <input type="text" class="form-control" id="fullname" name="fullname" placeholder="VD: Nguyễn Văn A" value="<?php echo !empty($user['ho_ten']) ? $user['ho_ten'] : '';?>">
+                                        <span class="form-text ms-3 text-danger"><?php echo !(empty($error['fullname'])) ? $error['fullname'] : ''; ?></span>
                                     </div>
                                     <div class="form-group">
                                         <label for="email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="email" placeholder="VD: example@gmail.com">
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="VD: example@gmail.com" value="<?php echo !empty($user['email']) ? $user['email'] : '';?>">
+                                        <span class="form-text ms-3 text-danger"><?php echo !(empty($error['email'])) ? $error['email'] : ''; ?></span>
                                     </div>
                                 </div>
 
                                 <div class="form-group-flex">
                                     <div class="form-group">
                                         <label for="account" class="form-label">Tên tài khoản</label>
-                                        <input type="text" class="form-control" id="account" name="fullname" placeholder="VD: abc123">
+                                        <input type="text" class="form-control" id="account" name="account" placeholder="VD: abc123" value="<?php echo !empty($user['ten_tai_khoan']) ? $user['ten_tai_khoan'] : '';?>">
+                                        <span class="form-text ms-3 text-danger"><?php echo !(empty($error['account'])) ? $error['account'] : ''; ?></span>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group position-relative">
                                         <label for="password" class="form-label">Mật khẩu</label>
-                                        <input type="password" class="form-control" id="password" name="password" placeholder="******">
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="******" value="<?php echo !empty($user['mat_khau']) ? $user['mat_khau'] : '';?>">
+                                        <span class="form-text ms-3 text-danger"><?php echo !(empty($error['password'])) ? $error['password'] : ''; ?></span>
+                                        <span class="show-password hide" style="top: 70%"><i class="fa-regular fa-eye"></i></span>
                                     </div>
                                 </div>
 
                                 <div class="form-group-flex">
                                     <div class="form-group">
                                         <label for="phone" class="form-label">Số điện thoại</label>
-                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="VD: 0123456789">
+                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="VD: 0123456789" value="<?php echo !empty($user['so_dien_thoai']) ? $user['so_dien_thoai'] : '';?>">
+                                        <span class="form-text ms-3 text-danger"><?php echo !(empty($error['phone'])) ? $error['phone'] : ''; ?></span>
                                     </div>
                                     <div class="form-group">
                                         <label for="address" class="form-label">Địa chỉ</label>
-                                        <textarea class="form-control" name="address" id="address" name="address" cols="30" rows="1"></textarea>
+                                        <textarea class="form-control" name="address" id="address" name="address" cols="30" rows="1"><?php echo !empty($user['dia_chi']) ? $user['dia_chi'] : '';?></textarea>
+                                        <span class="form-text ms-3 text-danger"><?php echo !(empty($error['address'])) ? $error['address'] : ''; ?></span>
                                     </div>
                                 </div>
                                 <div class="form-group-flex">
                                     <div class="form-group">
                                         <label for="phone" class="form-label">Level</label>
                                         <select class="form-select" name="level" aria-label="Default select example">
-                                            <option value="0">0 - Admin</option>
-                                            <option value="1">1 - User</option>
+                                            <?php if($user['level'] == 0) { ?>
+                                                <option value="0" selected>0 - User</option>
+                                                <option value="1">1 - Admin</option>
+                                            <?php } else { ?>
+                                                <option value="0">0 - User</option>
+                                                <option value="1" selected>1 - Admin</option>
+                                            <?php } ?>
                                           </select>
                                     </div>
                                 </div>
@@ -342,6 +497,11 @@
         }
 
 
+
+        const inputFile = document.querySelector('.upload-img input[name="avatar"]');
+        const gridImg = document.querySelector('.upload-img');
+
+        uploadFile(inputFile, gridImg);
     </script>
 
 </body>

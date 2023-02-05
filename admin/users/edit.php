@@ -2,10 +2,15 @@
     $conn = mysqli_connect('localhost', 'root', '', 'burger-shop') or die('Couldn\'t connect to Database');
 
     session_start();
+    date_default_timezone_set('Asia/Ho_Chi_Minh'); 
+    $date_current = '';
+    $date_current = date("Y-m-d H:i:s");
 
     if(!isset($_SESSION['admin_logged'])) {
         header('location: ../../account.php');
     }
+
+    $user_logged = $_SESSION['user_logged'];
 
     $id_user = isset($_GET['id']) ? $_GET['id'] : '';
 
@@ -76,6 +81,7 @@
                     'mat_khau' => $password,
                     'avatar' => $avatar,
                     'level' => $level,
+                    'updated_at' => $date_current
                 );
 
                 
@@ -310,13 +316,13 @@
                             <div class="page-header-right">
                                 <div class="profile">
                                     <button class="dropdown-btn">
-                                        <img src="../assets/img/1.png" alt="avatar" class="avatar">
+                                        <img src="<?php echo !empty($user_logged['avatar']) ? '../../storage/uploads/'. $user_logged['avatar'] : '../../storage/uploads/1.png';?>" alt="avatar" class="avatar">
                                     </button>
                                     <ul class="dropdown">
                                         <li class="dropdown-item">
-                                            <img src="../assets/img/1.png" alt="avatar" class="avatar">
+                                            <img src="<?php echo !empty($user_logged['avatar']) ? '../../storage/uploads/'. $user_logged['avatar'] : '../../storage/uploads/1.png';?>" alt="avatar" class="avatar">
                                             <div class="dropdown-content">
-                                                <p>Thanh</p>
+                                                <p><?php echo !empty($user_logged['ten_tai_khoan']) ? $user_logged['ten_tai_khoan'] : 'Admin website';?></p>
                                                 <span>Admin</span>
                                             </div>
                                         </li>

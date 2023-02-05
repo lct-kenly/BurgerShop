@@ -19,7 +19,7 @@
             $donhang = array();
 
             if(isset($trang_thai) && $trang_thai == "All") {
-                $sql = "SELECT don_hang.ma_don_hang, don_hang.trang_thai
+                $sql = "SELECT don_hang.ma_don_hang, don_hang.trang_thai, don_hang.updated_at
                 FROM don_hang
                 WHERE don_hang.id_khach_hang = {$id_user}
                 ORDER BY don_hang.created_at desc";
@@ -28,7 +28,7 @@
                     $donhang[] = $row;
                 }
             } else {
-                $sql = "SELECT don_hang.ma_don_hang, don_hang.trang_thai
+                $sql = "SELECT don_hang.ma_don_hang, don_hang.trang_thai, don_hang.updated_at
                 FROM don_hang
                 WHERE don_hang.id_khach_hang = {$id_user} AND don_hang.trang_thai = {$trang_thai}
                 ORDER BY don_hang.created_at desc";
@@ -249,7 +249,21 @@
                             <p class="mb-0 font-weight-bold">
                                 Mã đơn hàng: <?=$item['ma_don_hang']?> 
                             </p>
-                            <p class="mb-0 text-<?=$item['trang_thai'] == 4 ? 'danger' : 'success'; ?>"><i class="fa-solid fa-truck-moving mr-2"></i> <?=$state?></p>
+                            <?php 
+                                if($item['trang_thai'] == 4) {
+                            ?>
+                                  <p class="mb-0 text-danger">
+                                      <?=$state?> | <?=$item['updated_at']?>
+                                  </p>
+                            <?php 
+                                } else {
+                            ?>
+                                  <p class="mb-0 text-success">
+                                      <i class="fa-solid fa-truck-moving mr-2"></i> <?=$state?> | <?=$item['updated_at']?>
+                                  </p>
+                            <?php 
+                                }
+                            ?>
                         </div>
                         <div class="card-body">
                             <?php foreach($sanpham_donhang as $value) {
@@ -267,8 +281,13 @@
                                 </div>
                             <?php } ?>
                         </div>
-                        <div class="card-footer bg-white">
-                            <p class="text-right font-weight-bold mb-0">Tổng cộng: $<?=$sum?> </p>
+                        <div class="card-footer d-flex align-items-center justify-content-between bg-white">
+                            <?php if($item['trang_thai'] == 0) { ?>
+                              <button class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#exampleModal" data-id="<?=$item['ma_don_hang']?>">
+                                  Hủy đơn
+                              </button> 
+                            <?php } ?>
+                            <p class="text-right font-weight-bold mb-0 flex-fill">Tổng cộng: $<?=$sum?> </p>
                         </div>
                     </div>
                 <?php } ?>
@@ -287,7 +306,7 @@
                                 Mã đơn hàng: <?=$item['ma_don_hang']?>
                             </p>
                             <p class="mb-0 text-success">
-                                <i class="fa-solid fa-truck-moving mr-2"></i> <?=$state?>
+                                <i class="fa-solid fa-truck-moving mr-2"></i> <?=$state?> | <?=$item['updated_at']?>
                             </p>
                         </div>
                         <div class="card-body">
@@ -326,7 +345,9 @@
                     <div class="card mb-5">
                         <div class="card-header d-flex align-items-center justify-content-between bg-white">
                             <p class="mb-0 font-weight-bold">Mã đơn hàng: <?=$item['ma_don_hang']?></p>
-                            <p class="mb-0 text-success"><i class="fa-solid fa-truck-moving mr-2"></i> <?=$state?></p>
+                            <p class="mb-0 text-success">
+                                <i class="fa-solid fa-truck-moving mr-2"></i> <?=$state?> | <?=$item['updated_at']?>
+                            </p>
                         </div>
                         <div class="card-body">
                             <?php foreach($sanpham_donhang as $value) {
@@ -361,7 +382,9 @@
                     <div class="card mb-5">
                         <div class="card-header d-flex align-items-center justify-content-between bg-white">
                             <p class="mb-0 font-weight-bold">Mã đơn hàng: <?=$item['ma_don_hang']?></p>
-                            <p class="mb-0 text-success"><i class="fa-solid fa-truck-moving mr-2"></i> <?=$state?></p>
+                            <p class="mb-0 text-success">
+                                <i class="fa-solid fa-truck-moving mr-2"></i> <?=$state?> | <?=$item['updated_at']?> 
+                            </p>
                         </div>
                         <div class="card-body">
                             <?php foreach($sanpham_donhang as $value) {
@@ -396,7 +419,7 @@
                     <div class="card mb-5">
                         <div class="card-header d-flex align-items-center justify-content-between bg-white">
                             <p class="mb-0 font-weight-bold">Mã đơn hàng: <?=$item['ma_don_hang']?></p>
-                            <p class="mb-0 text-danger"><?=$state?></p>
+                            <p class="mb-0 text-danger"><?=$state?> | <?=$item['updated_at']?> </p>
                         </div>
                         <div class="card-body">
                             <?php foreach($sanpham_donhang as $value) {

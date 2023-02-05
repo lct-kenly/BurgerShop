@@ -7,6 +7,8 @@
         header('location: ../../account.php');
     }
 
+    $user_logged = $_SESSION['user_logged'];
+
     $sql = "SELECT * FROM san_pham";
     $query = mysqli_query($conn, $sql);
     $products = array();
@@ -171,13 +173,13 @@
                             <div class="page-header-right">
                                 <div class="profile">
                                     <button class="dropdown-btn">
-                                        <img src="../assets/img/1.png" alt="avatar" class="avatar">
+                                        <img src="<?php echo !empty($user['avatar']) ? '../../storage/uploads/'. $user['avatar'] : '../../storage/uploads/1.png';?>" alt="avatar" class="avatar">
                                     </button>
                                     <ul class="dropdown">
                                         <li class="dropdown-item">
-                                            <img src="../assets/img/1.png" alt="avatar" class="avatar">
+                                            <img src="<?php echo !empty($user['avatar']) ? '../../storage/uploads/'. $user['avatar'] : '../../storage/uploads/1.png';?>" alt="avatar" class="avatar">                                            
                                             <div class="dropdown-content">
-                                                <p>Thanh</p>
+                                                <p><?php echo !empty($user['ten_tai_khoan']) ? $user['ten_tai_khoan'] : 'Admin website';?></p>
                                                 <span>Admin</span>
                                             </div>
                                         </li>

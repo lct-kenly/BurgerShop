@@ -7,9 +7,12 @@
         header('location: ../../account.php');
     }
 
-    $users = array();
+    $user_logged = $_SESSION['user_logged'];
 
-    $sql = "SELECT * FROM khach_hang";
+    $users = array();
+    $user_logged = $_SESSION['user_logged'];
+
+    $sql = "SELECT * FROM khach_hang WHERE khach_hang.id NOT IN({$user_logged['id']})";
     $query = mysqli_query($conn, $sql);
 
     while ($row = mysqli_fetch_assoc($query)) {
@@ -173,13 +176,13 @@
                             <div class="page-header-right">
                                 <div class="profile">
                                     <button class="dropdown-btn">
-                                        <img src="../assets/img/1.png" alt="avatar" class="avatar">
+                                        <img src="<?php echo !empty($user_logged['avatar']) ? '../../storage/uploads/'. $user_logged['avatar'] : '../../storage/uploads/1.png';?>" alt="avatar" class="avatar">
                                     </button>
                                     <ul class="dropdown">
                                         <li class="dropdown-item">
-                                            <img src="../assets/img/1.png" alt="avatar" class="avatar">
+                                            <img src="<?php echo !empty($user_logged['avatar']) ? '../../storage/uploads/'. $user_logged['avatar'] : '../../storage/uploads/1.png';?>" alt="avatar" class="avatar">
                                             <div class="dropdown-content">
-                                                <p>Thanh</p>
+                                                <p><?php echo !empty($user_logged['ten_tai_khoan']) ? $user_logged['ten_tai_khoan'] : 'Admin website';?></p>
                                                 <span>Admin</span>
                                             </div>
                                         </li>
@@ -258,7 +261,6 @@
                                             <td><?=$item['ten_tai_khoan']?></td>
                                             <td>
                                                 <?php if($item['level'] == 1 && $item['ten_tai_khoan'] == 'admin') { ?>
-                                                    <a href="./edit.php?id=<?=$item['id']?>" class="btn btn-sm btn-outline-info"><i class="fa-regular fa-pen-to-square"></i></a>
                                                 <?php } else { ?>
                                                     <a href="./edit.php?id=<?=$item['id']?>" class="btn btn-sm btn-outline-info"><i class="fa-regular fa-pen-to-square"></i></a>
                                                     <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="<?=$item['id']?>">

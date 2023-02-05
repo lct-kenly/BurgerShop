@@ -8,6 +8,8 @@
         header('location: ../account.php');
     }
 
+    $user_logged = $_SESSION['user_logged'];
+
     function tong_don($conn, $thoi_gian) {
         $data = 0;
         
@@ -238,13 +240,13 @@
                             <div class="page-header-right">
                                 <div class="profile">
                                     <button class="dropdown-btn">
-                                        <img src="./assets/img/1.png" alt="avatar" class="avatar">
+                                        <img src="<?php echo !empty($user_logged['avatar']) ? '../storage/uploads/'. $user_logged['avatar'] : '../storage/uploads/1.png';?>" alt="avatar" class="avatar">
                                     </button>
                                     <ul class="dropdown">
                                         <li class="dropdown-item">
-                                            <img src="./assets/img/1.png" alt="avatar" class="avatar">
+                                            <img src="<?php echo !empty($user_logged['avatar']) ? '../storage/uploads/'. $user_logged['avatar'] : '../storage/uploads/1.png';?>" alt="avatar" class="avatar">
                                             <div class="dropdown-content">
-                                                <p>Thanh</p>
+                                                <p><?php echo !empty($user_logged['ten_tai_khoan']) ? $user_logged['ten_tai_khoan'] : 'Admin website';?></p>
                                                 <span>Admin</span>
                                             </div>
                                         </li>

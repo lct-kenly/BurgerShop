@@ -2,6 +2,9 @@
     $conn = mysqli_connect('localhost', 'root', '', 'burger-shop') or die('Couldn\'t connect to Database');
 
     session_start();
+    date_default_timezone_set('Asia/Ho_Chi_Minh'); 
+    $date_current = '';
+    $date_current = date("Y-m-d H:i:s");
  
     if(isset($_SESSION['user_logged'])) {
         $user = $_SESSION['user_logged'];
@@ -10,7 +13,7 @@
         $trang_thai = isset($_GET['state']) ? $_GET['state'] : '';
 
         if(!empty($ma_don_hang)) {
-            $sql = "UPDATE don_hang SET don_hang.trang_thai = {$trang_thai} WHERE  don_hang.ma_don_hang={$ma_don_hang}";
+            $sql = "UPDATE don_hang SET trang_thai = {$trang_thai}, updated_at = '{$date_current}' WHERE ma_don_hang={$ma_don_hang}";
     
             if(mysqli_query($conn, $sql)) {
                 echo "<script>
