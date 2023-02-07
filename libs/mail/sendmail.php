@@ -44,13 +44,13 @@
 
                 // Content
                 $mail->isHTML(true);   // Set email format to HTML
-                $mail->Subject = 'Đơn hàng của bạn tại Feane đã được xác nhận';
+                $mail->Subject = 'Xác nhận đặt bàn của khách hàng ' . $Data['fullname'];
                 $mail->Body = '<div>
                                     <p> Tên khách hàng: ' .$Data['fullname']. ' </p>
                                     <p> Email: ' .$Data['email']. ' </p>
                                     <p> Số điện thoại: ' .$Data['phone']. ' </p>
-                                    <p> Địa chỉ: ' .$Data['address']. ' </p>
-                                    <p> Nội dung hỗ trợ: ' .$Data['note']. ' </p>
+                                    <p> Số người: ' .$Data['person']. ' </p>
+                                    <p> Ngày đặt: ' .$Data['date']. ' </p>
                                </div>';
 
                 // $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';

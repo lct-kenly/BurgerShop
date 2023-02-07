@@ -238,6 +238,14 @@
                             </div>
 
                             <div class="page-header-right">
+                                <!-- <div class="notify">
+                                    <button class="btn"><i class="fa-regular fa-bell"></i></button>
+                                    <div class="notify-nav">
+                                        <ul class="notify-nav-list">
+                                            <li></li>
+                                        </ul>
+                                    </div>
+                                </div> -->
                                 <div class="profile">
                                     <button class="dropdown-btn">
                                         <img src="<?php echo !empty($user_logged['avatar']) ? '../storage/uploads/'. $user_logged['avatar'] : '../storage/uploads/1.png';?>" alt="avatar" class="avatar">

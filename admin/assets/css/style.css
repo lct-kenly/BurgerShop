@@ -222,6 +222,12 @@
     border: none;
 }
 
+.page-header-right {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
 .page-header-right .profile {
     position: relative;
 }

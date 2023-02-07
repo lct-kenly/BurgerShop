@@ -1,8 +1,12 @@
 <?php 
     $conn = mysqli_connect('localhost', 'root', '', 'burger-shop') or die('Couldn\'t connect to Database');
 
+    include('./libs/mail/sendmail.php');
+    $mail = new Mailler;
+
     $error = array();
     session_start();
+    date_default_timezone_set('Asia/Ho_Chi_Minh');
 
     if(isset($_SESSION['user_logged'])) {
         $user = $_SESSION['user_logged'];
@@ -11,6 +15,66 @@
 
         $countID_cart = get_count_cart($conn, $user['id']) ?? 0;
 
+    }
+
+    if(isset($_POST['submit']) && $_POST['submit'] == 'submit') {
+        $name = isset($_POST['name']) ? $_POST['name'] : '';
+        $email = isset($_POST['email']) ? $_POST['email'] : '';
+        $phone = isset($_POST['phone']) ? $_POST['phone'] : '';
+        $person = isset($_POST['person']) ? $_POST['person'] : '';
+        $date = isset($_POST['date-order']) ? date_format(date_create($_POST['date-order']), 'Y-m-d') : '';
+
+        if(empty($name)) {
+          $error['name'] = 'Bạn chưa nhập họ tên';
+        }
+
+        if(empty($email)) {
+          $error['email'] = 'Bạn chưa nhập email';
+        }
+
+        if(empty($phone)) {
+          $error['phone'] = 'Bạn chưa nhập số điện thoại';
+        }
+
+        if(empty($person)) {
+          $error['person'] = 'Bạn chưa chọn số người';
+        }
+
+        if(empty($date)) {
+          $error['date'] = 'Bạn chưa chọn ngày';
+        }
+
+        if(!($error)) {
+          $sql = "INSERT INTO `dat_ban`(`ten_khach_hang`, `so_dien_thoai`, `email`, `so_nguoi`, `ngay_dat`) 
+                  VALUES ('{$name}','{$phone}','{$email}', {$person} ,'{$date}')";
+
+          $query = mysqli_query($conn, $sql);
+
+          if($query) {
+              $data = array(
+                'fullname' => $name,
+                'email' => $email,
+                'phone' => $phone,
+                'person' => $person,
+                'date' => $date,
+              );
+              $mail->sendmail($data);
+
+              echo "<script>
+                        alert('Đặt bàn thành công, chúng tôi sẽ liên hệ bạn trong thời gian sớm nhất!');
+                        window.location.href = './index.php';
+                    </script>";
+
+          } else {
+              echo "<script>
+                        alert('Có lỗi trong quá trình xử lý, vui lòng thử lại!');
+                    </script>";
+          }
+        } else {
+          echo "<script>
+          alert('Có lỗi trong quá trình xử lý, vui lòng thử lại!');
+      </script>";
+        }
     }
 
 ?>
@@ -157,40 +221,45 @@
       <div class="row">
         <div class="col-md-6">
           <div class="form_container">
-            <form action="">
-              <div>
-                <input type="text" class="form-control" placeholder="Your Name" />
+            <form method="POST" action="">
+              <div class="mb-4">
+                <input type="text" class="form-control mb-0" name="name" placeholder="Your Name" value="<?php echo !empty($user['ho_ten']) ? $user['ho_ten'] : ''; ?>"/>
+                <span class="form-text ml-4 text-danger"><?php echo isset($error['name']) ? $error['name'] : ''; ?></span>
               </div>
-              <div>
-                <input type="text" class="form-control" placeholder="Phone Number" />
+              <div class="mb-4">
+                <input type="text" class="form-control mb-0" name="phone" placeholder="Phone Number" value="<?php echo !empty($user['so_dien_thoai']) ? $user['so_dien_thoai'] : ''; ?>"/>
+                <span class="form-text ml-4 text-danger"><?php echo isset($error['phone']) ? $error['phone'] : ''; ?></span>
               </div>
-              <div>
-                <input type="email" class="form-control" placeholder="Your Email" />
+              <div class="mb-4">
+                <input type="email" class="form-control mb-0" name="email" placeholder="Your Email" value="<?php echo !empty($user['email']) ? $user['email'] : ''; ?>"/>
+                <span class="form-text ml-4 text-danger"><?php echo isset($error['name']) ? $error['name'] : ''; ?></span>
               </div>
-              <div>
-                <select class="form-control nice-select wide">
+              <div class="mb-4">
+                <select class="form-control" name="person">
                   <option value="" disabled selected>
                     How many persons?
                   </option>
-                  <option value="">
+                  <option value="2">
                     2
                   </option>
-                  <option value="">
+                  <option value="3">
                     3
                   </option>
-                  <option value="">
+                  <option value="4">
                     4
                   </option>
-                  <option value="">
+                  <option value="5">
                     5
                   </option>
                 </select>
+                <span class="form-text ml-4 text-danger"><?php echo isset($error['person']) ? $error['person'] : ''; ?></span>
               </div>
-              <div>
-                <input type="date" class="form-control">
+              <div class="mb-4 mt-4">
+                <input type="date" name="date-order" class="form-control mb-0">
+                <span class="form-text ml-4 text-danger"><?php echo isset($error['date']) ? $error['date'] : ''; ?></span>
               </div>
               <div class="btn_box">
-                <button>
+                <button type="submit" name="submit" value="submit">
                   Book Now
                 </button>
               </div>
