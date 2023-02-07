@@ -320,7 +320,7 @@
                     <p><?=$item['mo_ta']?></p>
                     <div class="options">
                       <h6>$<?=$item['don_gia_ban']?></h6>
-                      <a href="./insert-cart.php?id=<?=$item['id']?>&soluong=1">
+                      <a class="add-cart" href="./insert-cart.php?id=<?=$item['id']?>&soluong=1">
                         <i class="fa-solid fa-cart-shopping"></i>
                       </a>
                     </div>
@@ -506,7 +506,7 @@
         </button>
       </div>
       <div class="toast-body">
-        Hello, world! This is a toast message.
+        
       </div>
     </div>
   </div>
@@ -531,6 +531,10 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap">
   </script>
   <!-- End Google Map -->
+
+  <script>
+
+  </script>
 
 </body>
 
