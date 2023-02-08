@@ -230,10 +230,36 @@
                                 </form>
                             </div>
 
-                            <a href="account.php" class="user_link">
+                            <?php if(isset($user)) { ?>
+                                <div class="grid-logged">
+                                <button class="user_logged btn-show-nav-sub" type="button">
+                                    <img src="<?php echo !empty($user['avatar']) ? './storage/uploads/'.$user['avatar'] : './images/avatar-.jpg'?>" alt="">
+                                    <span><?=$user['ten_tai_khoan']?></span>
+                                    </button>
+                                    <ul class="nav-sub-logged">
+                                        <li>
+                                        <img src="<?php echo !empty($user['avatar']) ? './storage/uploads/'.$user['avatar'] : './images/avatar-.jpg'?>" alt="">
+                                        <span><?=$user['ten_tai_khoan']?></span>
+                                        </li>
+                                        <li class="divider"></li>
+                                        <li>
+                                        <a href="./profile.php"><i class="fa-regular fa-user"></i> My Profile</a>
+                                        </li>
+                                        <li>
+                                        <a href="./order.php"><i class="fa-solid fa-list-check"></i> My Purchase Order</a>
+                                        </li>
+                                        <li class="divider"></li>
+                                        <li>
+                                        <a href="./logout.php"><i class="fa-solid fa-power-off"></i> Log Out</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            <?php } else { ?>
+                                <a href="account.php" class="user_link">
                                 <i class="fa fa-user mr-2" aria-hidden="true"></i>
-                                Đăng nhập
-                            </a>
+                                Login
+                                </a>
+                            <?php } ?>
                         </div>
                     </div>
                 </nav>

@@ -320,7 +320,7 @@
                     <p><?=$item['mo_ta']?></p>
                     <div class="options">
                       <h6>$<?=$item['don_gia_ban']?></h6>
-                      <a class="add-cart" href="./insert-cart.php?id=<?=$item['id']?>&soluong=1">
+                      <a class="add-cart" href="#" data-id="<?=$item['id']?>" data-quantity="1">
                         <i class="fa-solid fa-cart-shopping"></i>
                       </a>
                     </div>
@@ -495,20 +495,19 @@
   ?>
 
   <!-- Toast -->
-  <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
-    <div class="toast" style="position: absolute; top: 0; right: 0;">
+  <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; right: 16px;
+  bottom: 16px;">
       <div class="toast-header">
-        <img src="..." class="rounded mr-2" alt="...">
-        <strong class="mr-auto">Feane</strong>
-        <small>1 mins ago</small>
+        <img src="" class="rounded mr-2" alt="...">
+        <strong class="mr-auto">Bootstrap</strong>
+        <small>1 second ago</small>
         <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="toast-body">
-        
+        Hello, world! This is a toast message.
       </div>
-    </div>
   </div>
 
   <!-- jQery -->
@@ -533,6 +532,35 @@
   <!-- End Google Map -->
 
   <script>
+
+    $(document).ready(function(){
+        $('.add-cart').click(function(e){
+            e.preventDefault();
+
+            const id = $(this).attr('data-id');
+            const quantity = $(this).attr('data-quantity');
+
+            const sumCart = $('.cart_link > span').text();
+
+
+            $.ajax({
+                url: 'insert-cart.php',
+                method: 'GET',
+                dataType: 'JSON',
+                data: {id: id, soluong: quantity, sumcart: sumCart},
+            }).done(function(data) {
+                if(data.redirect) {
+                  window.location.href = 'account.php';
+                } else {
+                  $('.toast').toast('show');
+
+                  $('.toast-body').html(data.notify);
+                  $('.cart_link > span').text(data.sumcart);
+                }
+            })
+        })
+
+    })
 
   </script>
 

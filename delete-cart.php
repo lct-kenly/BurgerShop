@@ -7,20 +7,17 @@
         $user = $_SESSION['user_logged'];
 
         $id_san_pham = isset($_GET['id']) ? $_GET['id'] : '';
+        $sumcart = isset($_GET['sumcart']) ? $_GET['sumcart'] : '';
 
         if(!empty($id_san_pham)) {
             $sql = "DELETE FROM gio_hang WHERE id_khach_hang={$user['id']} AND id_san_pham={$id_san_pham}";
     
             if(mysqli_query($conn, $sql)) {
-                echo "<script>
-                        alert('Xóa sản phẩm thành công!');
-                        window.location.href = './cart.php';
-                    </script>";
+                $sumcart -= 1;
+                echo json_encode(array("notify" => "Xóa sản phẩm thành công!", "sumcart" => $sumcart));
+
             } else {
-                echo "<script>
-                        alert('Có lỗi trong quá trình xử lý, vui lòng thử lại!');
-                        window.location.href = './cart.php';
-                    </script>";
+                echo json_encode(array("notify" => "Có lỗi trong quá trình xử lý, Vui lòng thử lại!"));
             }
          }
 

@@ -26,37 +26,6 @@
         }
 
         $count = count($sanpham_giohang);
-
-        // Cập nhật giỏ hàng
-        if(isset($_POST['submit']) && $_POST['submit'] == 'submit') {
-            $id = isset($_POST['id_san_pham']) ? $_POST['id_san_pham'] : array();
-            $soluong = isset($_POST['so_luong']) ? $_POST['so_luong'] : array();
-
-            if(empty($soluong)) {
-                $error['soluong'] = 'Lỗi, mảng rỗng';
-            }
-
-            if(empty($id)) {
-                $error['id'] = 'Lỗi, mảng rỗng';
-            }
-
-            if(!($error)) {
-                for($i = 0; $i < count($id); $i++) {
-                    if($soluong[$i] < 0) $soluong[$i] = 1;
-
-                    $sql = "UPDATE `gio_hang` SET `so_luong`='{$soluong[$i]}' WHERE `id_khach_hang`={$user['id']} AND `id_san_pham`={$id[$i]}";
-                    $query = mysqli_query($conn, $sql);
-
-                }
-
-                if($query) {
-                    echo "<script>
-                            alert('Cập nhật giỏ hàng thành công!');
-                            window.location.href = 'cart.php';
-                        </script>";
-                }
-            }
-        }
     }
 ?>
 
@@ -219,14 +188,14 @@
                     <tr>
                       <td class="text-center"><img src="./storage/uploads/<?=$item['hinh_anh']?>" alt="" style="width: 60px; height: 60px"></td>
                       <td class="text-center vertical-center"><?=$item['ten_san_pham']?></td>
-                      <td class="text-center vertical-center">$<?=$item['don_gia_ban']?></td>
+                      <td class="text-center vertical-center product-price">$<?=$item['don_gia_ban']?></td>
                       <td class="text-center vertical-center">
                           <input class="p-2" type="number" name="so_luong[]" form="form-update-cart" value="<?=$item['so_luong']?>" style="max-width: 50%">
                           <input type="hidden" name="id_san_pham[]" form="form-update-cart" value="<?=$item['id']?>" />
                       </td>
-                      <td class="text-center vertical-center">$<?=$item['tri_gia']?></td>
+                      <td class="text-center vertical-center product-total">$<?=$item['tri_gia']?></td>
                       <td class="text-center vertical-center">
-                        <a href="./delete-cart.php?id=<?=$item['id']?>">
+                        <a class="delete-product-cart" href="#" data-id="<?=$item['id']?>">
                           <i class="fa-solid fa-x"></i>
                         </a>
                       </td>
@@ -234,8 +203,8 @@
                   <?php } ?>
                 </tbody>
             </table>
-            <button type="submit" name="submit" value="submit" form="form-update-cart" class="btn btn-primary py-2 px-5">Update Cart</button>
-            <form id="form-update-cart" method="POST" action=""></form>
+            <button type="button" class="btn btn-primary btn-update-cart" class="btn btn-primary py-2 px-5">Update Cart</button>
+
         </div>
         <div class="col-md-4">
             <table class="table table-bordered">
@@ -248,15 +217,15 @@
                 <tbody>
                   <tr>
                     <td class="text-center">Subtotal:</td>
-                    <td class="text-center">$<?=$sum?></td>
+                    <td class="text-center subtotal-cart">$<?=$sum?></td>
                   </tr>
                   <tr>
                     <td class="text-center">Shipping:</td>
-                    <td class="text-center">$45</td>
+                    <td class="text-center">$15</td>
                   </tr>
                   <tr>
                     <td class="text-center">Total:</td>
-                    <td class="text-center">$<?=$sum + 45?></td>
+                    <td class="text-center total-cart">$<?=$sum + 15?></td>
                   </tr>
                 </tbody>
               </table>
@@ -270,6 +239,22 @@
   <?php
     include_once('./partials/footer.php');
   ?>
+
+    <!-- Toast -->
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; right: 16px;
+  bottom: 16px;">
+        <div class="toast-header">
+          <img src="" class="rounded mr-2" alt="...">
+          <strong class="mr-auto">Bootstrap</strong>
+          <small>1 second ago</small>
+          <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="toast-body">
+          Hello, world! This is a toast message.
+        </div>
+    </div>
 
   <!-- jQery -->
   <script src="js/jquery-3.4.1.min.js"></script>
@@ -291,6 +276,82 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap">
   </script>
   <!-- End Google Map -->
+
+  <script>
+
+    $(document).ready(function(){
+        let arrID = [];
+        let arrQuantity = [];
+        $('.btn-update-cart').click(function(e){
+
+            $('input[name="id_san_pham[]"]').each(function(index, item){
+                arrID.push($(item).val());
+            });
+
+            $('input[name="so_luong[]"]').each(function(index, item){
+                arrQuantity.push($(item).val());
+            })
+
+            $.ajax({
+                url: 'update-cart.php',
+                method: 'POST',
+                dataType: 'JSON',
+                data: {id_san_pham: arrID, so_luong: arrQuantity},
+            }).done(function(data) {
+              $('.toast').toast('show');
+
+              $('.toast-body').html(data.notify);
+
+            })
+        });
+
+
+        // chang value price product / subtotal / total
+        let subTotal = Number($('.subtotal-cart').text().replace('$', ''));
+        let total = Number($('.total-cart').text().replace('$', ''));
+        $('input[name="so_luong[]"]').change(function() {
+
+            // change value product total
+            let price = Number($(this).parent().parent().find('.product-price').text().replace('$', ''));
+
+            $(this).parent().parent().find('.product-total').text('$' + ($(this).val() * price));
+
+            // change subtotal-cart / total cart
+            subTotal += price;
+            total = subTotal + 15;
+
+            $('.subtotal-cart').text(subTotal);
+            $('.total-cart').text(total);
+        });
+
+
+        $('.delete-product-cart').click(function (e) {
+            e.preventDefault();
+
+            const parent = $(this).parent().parent();
+            const id = $(this).attr('data-id');
+            const sumCart = $('.cart_link > span').text();
+
+            $.ajax({
+                url: 'delete-cart.php',
+                method: 'GET',
+                dataType: 'JSON',
+                data: {id: id, sumcart: sumCart},
+            }).done(function(data) {
+              
+              parent.remove();
+
+              $('.toast').toast('show');
+              $('.toast-body').html(data.notify);
+              $('.cart_link > span').text(data.sumcart);
+
+              console.log();
+            })
+        })
+
+    })
+
+  </script>
 
 </body>
 

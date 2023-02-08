@@ -9,6 +9,7 @@
 
         $id_san_pham = isset($_GET['id']) ? $_GET['id'] : '';
         $soluong = isset($_GET['soluong']) ? $_GET['soluong'] : 1;
+        $sumCart = isset($_GET['sumcart']) ? $_GET['sumcart'] : 0;
 
 
         if(!(empty($id_san_pham))) {
@@ -24,28 +25,18 @@
                 $sql = "UPDATE `gio_hang` SET `so_luong`='{$soluong}' WHERE id_khach_hang = {$user['id']} AND id_san_pham = {$id_san_pham}";
                 $query = mysqli_query($conn, $sql);
                 if($query) {
-                    echo "<script>
-                            alert('Đã thêm vào giỏ hàng thành công!');
-                            window.location.href = './index.php';
-                         </script>";
+                    echo json_encode(array("notify" => "Đã thêm vào giỏ hàng thành công!"));
                 } else {
-                    echo "<script>
-                            alert('Có lỗi trong quá trình xử lý, Vui lòng thử lại!');
-                         </script>";
+                    echo json_encode(array("notify" => "Có lỗi trong quá trình xử lý, Vui lòng thử lại!"));
                 }
             } else {
                 $sql = "INSERT INTO `gio_hang`(`id`, `id_khach_hang`, `id_san_pham`, `so_luong`) VALUES ('{$user['id']}','{$user['id']}','{$id_san_pham}','{$soluong}')";
                 $query = mysqli_query($conn, $sql);
                 if($query) {
-
-                    echo "<script>
-                            alert('Đã thêm vào giỏ hàng thành công!');
-                            window.location.href = './index.php';
-                         </script>";
+                    $sumCart += 1;
+                    echo json_encode(array("notify" => "Đã thêm vào giỏ hàng thành công!", "sumcart" => $sumCart));
                 } else {
-                    echo "<script>
-                            alert('Có lỗi trong quá trình xử lý, Vui lòng thử lại!');
-                         </script>";
+                    echo json_encode(array("notify" => "Có lỗi trong quá trình xử lý, Vui lòng thử lại!"));
                 }
             }
 
@@ -53,9 +44,7 @@
     } else {
         $_SESSION['previous-page'] = $_SERVER['HTTP_REFERER'];
 
-        echo "<script>
-                alert('Vui lòng đăng nhập để tiếp tục!');
-                window.location.href = './account.php';
-            </script>";
+        echo json_encode(array("redirect" => "Vui long dang nhap de tiep tuc!"));
+
     }
 ?> 
