@@ -217,7 +217,7 @@
                     <p><?=$item['mo_ta']?></p>
                     <div class="options">
                       <h6>$<?=$item['don_gia_ban']?></h6>
-                      <a href="./insert-cart.php?id=<?=$item['id']?>&soluong=1">
+                      <a class="add-cart" href="#" data-id="<?=$item['id']?>" data-quantity="1">
                         <i class="fa-solid fa-cart-shopping"></i>
                       </a>
                     </div>
@@ -274,6 +274,22 @@
     include_once('./partials/footer.php');
   ?>
 
+  <!-- Toast -->
+  <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="1000" style="position: fixed; right: 16px;
+  bottom: 16px; ">
+      <div class="toast-header">
+        
+        <strong class="mr-auto">Feane</strong>
+        <small>1 second ago</small>
+        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="toast-body">
+        Hello, world! This is a toast message.
+      </div>
+  </div>
+
   <!-- jQery -->
   <script src="js/jquery-3.4.1.min.js"></script>
   <!-- popper js -->
@@ -294,6 +310,38 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap">
   </script>
   <!-- End Google Map -->
+
+  <script>
+      $(document).ready(function(){
+        $('.add-cart').click(function(e){
+            e.preventDefault();
+
+            const id = $(this).attr('data-id');
+            const quantity = $(this).attr('data-quantity');
+
+            const sumCart = $('.cart_link > span').text();
+
+
+            $.ajax({
+                url: 'insert-cart.php',
+                method: 'GET',
+                dataType: 'JSON',
+                data: {id: id, soluong: quantity, sumcart: sumCart},
+            }).done(function(data) {
+                if(data.redirect) {
+                  window.location.href = 'account.php';
+                } else {
+                  $('.toast').toast('show');
+
+                  $('.toast-body').html(data.notify);
+                  $('.cart_link > span').text(data.sumcart);
+                }
+            })
+        })
+
+    })
+  </script>
+
 
 </body>
 

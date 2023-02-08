@@ -241,9 +241,7 @@
   ?>
 
     <!-- Toast -->
-    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="1000" style="position: fixed; right: 16px;
-  bottom: 16px; "
-  bottom: 16px;">
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="1000" style="position: fixed; right: 16px; bottom: 16px; ">
         <div class="toast-header">
           
           <strong class="mr-auto">Feane</strong>
