@@ -30,7 +30,7 @@
                 //Recipients
                 $mail->setFrom('thanh.ledah@gmail.com', 'FEANE');
 
-                $mail->addAddress($Data['email']); // Add a recipient
+                // $mail->addAddress($Data['email']); // Add a recipient
                 $mail->addAddress('thanh.ledah@gmail.com'); // Name is optional
 
 
@@ -82,7 +82,7 @@
                 //Recipients
                 $mail->setFrom('thanh.ledah@gmail.com', 'FEANE');
 
-                $mail->addAddress($Data['email']); // Add a recipient
+                // $mail->addAddress($Data['email']); // Add a recipient
                 $mail->addAddress('thanh.ledah@gmail.com'); // Name is optional
 
 
@@ -98,7 +98,7 @@
                 $mail->isHTML(true);   // Set email format to HTML
                 $mail->Subject = 'Xác nhận đơn hàng của khách hàng ' . $Data['fullname'];
                 $mail->Body = '<div>
-                                    <div style="display: flex">
+                                    <div>
                                         <p> Khách hàng: ' .$Data['fullname']. ' </p>
                                         <p> Mã đơn hàng: ' .$Data['id_don_hang']. ' </p>
                                     </div>
