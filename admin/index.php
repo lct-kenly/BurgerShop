@@ -309,19 +309,19 @@
                                 <div class="col-lg-3 col-md-6 col-12 mt-4">
                                     <div class="card">
                                         <div class="card-body">
-                                          <div class="card-body-left">
+                                          <div class="card-body-top">
                                             <span class="card-icon bg-danger bg-opacity-10">
                                                 <i class="fa-solid fa-sack-dollar text-danger"></i>
                                             </span>
-                                            <p class="card-text">Doanh thu tháng</p>
+                                            <p class="card-total"><?php echo $doanh_thu_thang ?>$</p>
                                           </div>
 
-                                          <div class="card-body-right">
-                                            <p class="card-total"><?php echo $doanh_thu_thang ?>$</p>
+                                          <div class="card-body-bottom">
+                                            <p class="card-text mb-0">Doanh thu tháng</p>
                                             <?php if($tang_truong_doanh_thu_thang > 0) { ?>
-                                                <p class="text-success"><i class="fa-solid fa-arrow-trend-up"></i> +<?=$tang_truong_doanh_thu_thang?>%</p>
+                                                <p class="mt-4 mb-0 text-success"><i class="fa-solid fa-arrow-trend-up"></i> +<?=$tang_truong_doanh_thu_thang?>%</p>
                                             <?php } else { ?>
-                                                <p class="text-danger"><i class="fa-solid fa-arrow-trend-down"></i> <?=$tang_truong_doanh_thu_thang?>%</p>
+                                                <p class="mt-4 mb-0 text-danger"><i class="fa-solid fa-arrow-trend-down"></i> <?=$tang_truong_doanh_thu_thang?>%</p>
                                             <?php } ?>
                                           </div>
                                         </div>
@@ -331,19 +331,20 @@
                                 <div class="col-lg-3 col-md-6 col-12 mt-4">
                                     <div class="card">
                                         <div class="card-body">
-                                          <div class="card-body-left">
+                                          <div class="card-body-top">
                                             <span class="card-icon bg-success bg-opacity-10">
                                                 <i class="fa-solid fa-coins text-success"></i>
                                             </span>
-                                            <p class="card-text">Doanh thu ngày</p>
+                                            <p class="card-total"><?php echo $doanh_thu_ngay ?>$</p>
+
                                           </div>
 
-                                          <div class="card-body-right">
-                                            <p class="card-total"><?php echo $doanh_thu_ngay ?>$</p>
+                                          <div class="card-body-bottom">
+                                            <p class="card-text mb-0">Doanh thu ngày</p>
                                             <?php if($tang_truong_doanh_thu_ngay > 0) { ?>
-                                                <p class="text-success"><i class="fa-solid fa-arrow-trend-up"></i> +<?=$tang_truong_doanh_thu_ngay?>%</p>
+                                                <p class="mt-4 mb-0 text-success"><i class="fa-solid fa-arrow-trend-up"></i> +<?=$tang_truong_doanh_thu_ngay?>%</p>
                                             <?php } else { ?>
-                                                <p class="text-danger"><i class="fa-solid fa-arrow-trend-down"></i> <?=$tang_truong_doanh_thu_ngay?>%</p>
+                                                <p class="mt-4 mb-0 text-danger"><i class="fa-solid fa-arrow-trend-down"></i> <?=$tang_truong_doanh_thu_ngay?>%</p>
                                             <?php } ?>
                                           </div>
                                         </div>
@@ -353,19 +354,19 @@
                                 <div class="col-lg-3 col-md-6 col-12 mt-4">
                                     <div class="card">
                                         <div class="card-body">
-                                          <div class="card-body-left">
+                                          <div class="card-body-top">
                                             <span class="card-icon bg-info bg-opacity-10">
                                                 <i class="fa-solid fa-bag-shopping text-info"></i>
                                             </span>
-                                            <p class="card-text">Tổng đơn tháng</p>
-                                          </div>
-
-                                          <div class="card-body-right">
                                             <p class="card-total"><?php echo $tong_don_thang ?></p>
+                                          </div>
+                                          <div class="card-body-bottom">
+                                          <p class="card-text mb-0">Tổng đơn tháng</p>
+
                                             <?php if($tang_truong_tong_don_thang > 0) { ?>
-                                                <p class="text-success"><i class="fa-solid fa-arrow-trend-up"></i> +<?=$tang_truong_tong_don_thang?>%</p>
+                                                <p class="mt-4 mb-0 text-success"><i class="fa-solid fa-arrow-trend-up"></i> +<?=$tang_truong_tong_don_thang?>%</p>
                                             <?php } else { ?>
-                                                <p class="text-danger"><i class="fa-solid fa-arrow-trend-down"></i> <?=$tang_truong_tong_don_thang?>%</p>
+                                                <p class="mt-4 mb-0 text-danger"><i class="fa-solid fa-arrow-trend-down"></i> <?=$tang_truong_tong_don_thang?>%</p>
                                             <?php } ?>
                                           </div>
                                         </div>
@@ -375,19 +376,18 @@
                                 <div class="col-lg-3 col-md-6 col-12 mt-4">
                                     <div class="card">
                                         <div class="card-body">
-                                          <div class="card-body-left">
+                                          <div class="card-body-top">
                                             <span class="card-icon bg-warning bg-opacity-10">
                                                 <i class="fa-solid fa-burger text-warning"></i>
                                             </span>
-                                            <p class="card-text">Tổng đơn ngày</p>
-                                          </div>
-
-                                          <div class="card-body-right">
                                             <p class="card-total"><?php echo $tong_don_ngay ?></p>
+                                          </div>
+                                          <div class="card-body-bottom">
+                                            <p class="card-text mb-0">Tổng đơn ngày</p>
                                             <?php if($tang_truong_tong_don_ngay > 0) { ?>
-                                                <p class="text-success"><i class="fa-solid fa-arrow-trend-up"></i> +<?=$tang_truong_tong_don_ngay?>%</p>
+                                                <p class="mt-4 mb-0 text-success"><i class="fa-solid fa-arrow-trend-up"></i> +<?=$tang_truong_tong_don_ngay?>%</p>
                                             <?php } else { ?>
-                                                <p class="text-danger"><i class="fa-solid fa-arrow-trend-down"></i> <?=$tang_truong_tong_don_ngay?>%</p>
+                                                <p class="mt-4 mb-0 text-danger"><i class="fa-solid fa-arrow-trend-down"></i> <?=$tang_truong_tong_don_ngay?>%</p>
                                             <?php } ?>
                                           </div>
                                         </div>

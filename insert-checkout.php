@@ -1,6 +1,7 @@
 <?php 
     $conn = mysqli_connect('localhost', 'root', '', 'burger-shop') or die('Couldn\'t connect to Database');
-
+    include('./libs/mail/sendmail.php');
+    $mail = new Mailler;
     $error = array();
     session_start();
 
@@ -36,6 +37,13 @@
 
                 $sql = "DELETE FROM `gio_hang` WHERE id_khach_hang={$user['id']}";
                 $query = mysqli_query($conn, $sql);
+
+                $data = array(
+                    "fullname" => $user['ho_ten'],
+                    "id_don_hang" => $id_don_hang
+                );
+
+                $mail->sendmail_order($data);
 
                 echo "<script>
                         alert('Đặt hàng thành công!');

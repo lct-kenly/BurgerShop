@@ -495,11 +495,12 @@
   ?>
 
   <!-- Toast -->
-  <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; right: 16px;
+  <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="1000" style="position: fixed; right: 16px;
+  bottom: 16px; "
   bottom: 16px;">
       <div class="toast-header">
-        <img src="" class="rounded mr-2" alt="...">
-        <strong class="mr-auto">Bootstrap</strong>
+        
+        <strong class="mr-auto">Feane</strong>
         <small>1 second ago</small>
         <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
           <span aria-hidden="true">&times;</span>

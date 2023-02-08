@@ -359,9 +359,9 @@
 }
 
 .page-content .card .card-body {
-    display: flex;
+    /* display: flex;
     align-items: flex-start;
-    justify-content: space-between;
+    justify-content: space-between; */
 }
 
 .page-content .card .card-icon {
@@ -387,6 +387,18 @@
     font-size: 20px;
     font-weight: 500;
     color: var(--text-color);
+}
+
+.page-content .card .card-body-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.page-content .card .card-body-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 form .form-group-flex {

@@ -42,7 +42,7 @@
 
         if(empty($date)) {
           $error['date'] = 'Bạn chưa chọn ngày';
-        }
+        } 
 
         if(!($error)) {
           $sql = "INSERT INTO `dat_ban`(`ten_khach_hang`, `so_dien_thoai`, `email`, `so_nguoi`, `ngay_dat`) 

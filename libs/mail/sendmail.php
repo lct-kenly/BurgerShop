@@ -62,6 +62,57 @@
             }
                 
         }
+
+        public function sendmail_order($Data) {
+            // Instantiation and passing `true` enables exceptions
+            $mail = new PHPMailer(true);
+            
+            try {
+                $mail->CharSet = 'utf8';
+                //Server settings
+                $mail->SMTPDebug = SMTP::DEBUG_OFF;// Enable verbose debug output
+                $mail->isSMTP();// gửi mail SMTP
+                $mail->Host = 'smtp.gmail.com';// Set the SMTP server to send through
+                $mail->SMTPAuth = true;// Enable SMTP authentication
+                $mail->Username = 'thanh.ledah@gmail.com';// SMTP username
+                $mail->Password = 'xiyrrbrtmybkhxzn'; // SMTP password
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;// Enable TLS encryption; 
+                $mail->Port = 587; // TCP port to connect to
+
+                //Recipients
+                $mail->setFrom('thanh.ledah@gmail.com', 'FEANE');
+
+                $mail->addAddress($Data['email']); // Add a recipient
+                $mail->addAddress('thanh.ledah@gmail.com'); // Name is optional
+
+
+                // $mail->addReplyTo('info@example.com', 'Information');
+                // $mail->addCC('cc@example.com');
+                // $mail->addBCC('bcc@example.com');
+
+                // Attachments
+                // $mail->addAttachment('/var/tmp/file.tar.gz'); // Add attachments
+                // $mail->addAttachment('/tmp/image.jpg', 'new.jpg'); // Optional name
+
+                // Content
+                $mail->isHTML(true);   // Set email format to HTML
+                $mail->Subject = 'Xác nhận đơn hàng của khách hàng ' . $Data['fullname'];
+                $mail->Body = '<div>
+                                    <div style="display: flex">
+                                        <p> Khách hàng: ' .$Data['fullname']. ' </p>
+                                        <p> Mã đơn hàng: ' .$Data['id_don_hang']. ' </p>
+                                    </div>
+                               </div>';
+
+                // $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+
+                $mail->send();
+                return true;
+            } catch (Exception $e) {
+                return false;
+            }
+                
+        }
     }
 
 ?>
